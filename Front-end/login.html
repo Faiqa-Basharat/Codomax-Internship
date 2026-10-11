@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjectMatch - Log In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f8f4;
+      --card: #ffffff;
+      --ink: #1c2420;
+      --muted: #5b625d;
+      --border: #e3e3dc;
+      --green: #75876f;
+      --green-dark: #66785f;
+      --error: #b3402f;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+      --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 462px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px 36px 32px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .intro { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+    .field { margin-bottom: 18px; }
+    label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+    input {
+      width: 100%;
+      height: 41px;
+      padding: 0 14px;
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    input::placeholder { color: #80857f; }
+    input:focus { outline: 2px solid rgba(117, 135, 111, 0.35); border-color: var(--green); }
+    input[aria-invalid="true"] { border-color: var(--error); }
+    .error { color: var(--error); font-size: 12px; margin-top: 6px; min-height: 0; }
+    .error:empty { display: none; }
+
+    .form-error { margin: -4px 0 12px; }
+
+    .submit {
+      width: 100%;
+      height: 40px;
+      margin-top: 6px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green);
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .submit:hover { background: var(--green-dark); }
+    .submit:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    .switch {
+      border-top: 1px solid var(--border);
+      margin-top: 24px;
+      padding-top: 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .switch a { color: var(--muted); font-weight: 600; margin-left: 4px; text-decoration: none; }
+    .switch a:hover { color: var(--ink); text-decoration: underline; }
+
+    @media (max-width: 480px) { .auth-card { padding: 28px 22px 26px; } }
+  </style>
+</head>
+<body>
+
+  <main class="auth-card">
+    <p class="eyebrow">Welcome back</p>
+    <h1>Log in to ProjectMatch</h1>
+    <p class="intro">Access your saved projects, activity, and collaborative teams.</p>
+
+    <form id="login-form" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="name@university.edu" autocomplete="email">
+        <p class="error" id="email-error" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password">
+        <p class="error" id="password-error" role="alert"></p>
+      </div>
+
+      <p class="error form-error" id="form-error" role="alert"></p>
+      <button type="submit" class="submit">Log In</button>
+    </form>
+
+    <p class="switch">Don't have an account yet? <a href="register.html">Register Now</a></p>
+  </main>
+
+  <script>
+    var form = document.getElementById('login-form');
+
+    function setError(id, message) {
+      var input = document.getElementById(id);
+      document.getElementById(id + '-error').textContent = message;
+      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+    }
+
+    function getUsers() {
+      try { return JSON.parse(localStorage.getItem('pm_users')) || []; }
+      catch (e) { return []; }
+    }
+
+    ['email', 'password'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', function () {
+        setError(id, '');
+        document.getElementById('form-error').textContent = '';
+      });
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.email.value.trim().toLowerCase();
+      var password = form.password.value;
+      var formError = document.getElementById('form-error');
+      formError.textContent = '';
+
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      setError('email', emailOk ? '' : 'Please enter a valid email address.');
+      setError('password', password ? '' : 'Please enter your password.');
+      if (!emailOk || !password) {
+        var firstBad = form.querySelector('[aria-invalid="true"]');
+        if (firstBad) firstBad.focus();
+        return;
+      }
+
+      var user = getUsers().find(function (u) { return u.email === email && u.password === password; });
+      if (!user) {
+        formError.textContent = 'Email or password is incorrect. If you are new here, register first.';
+        return;
+      }
+
+      localStorage.setItem('pm_currentUser', JSON.stringify({ name: user.name, email: user.email }));
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
