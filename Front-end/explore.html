@@ -1,1 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProjectMatch - Explore Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f8f4;
+      --card: #ffffff;
+      --ink: #1c2420;
+      --muted: #5b625d;
+      --border: #e3e3dc;
+      --green: #6b7f68;
+      --chip: #eeeee8;
+      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+      --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    }
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    button, select, input { font-family: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ---------- Header ---------- */
+    .site-header { border-bottom: 1px solid var(--border); background: var(--bg); }
+    .nav {
+      max-width: 1112px;
+      margin: 0 auto;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 19px; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { display: block; padding: 8px 0; color: var(--muted); font-size: 15px; }
+    .nav-links a.active { color: var(--ink); font-weight: 500; box-shadow: 0 2px 0 var(--green); }
+
+    /* ---------- Search section ---------- */
+    .search, .projects { max-width: 1112px; margin: 0 auto; }
+    .search { padding-top: 40px; }
+
+    .panel h3 {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .panel h1 {
+      font-family: var(--serif);
+      font-size: 46px;
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+    }
+    .panel p { font-size: 17px; color: var(--muted); margin-bottom: 36px; }
+
+    .search-wrap {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .search-box { position: relative; margin-bottom: 20px; }
+    .search-box input {
+      width: 100%;
+      height: 43px;
+      background: #f6f6f2;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 16px 0 38px;
+      font-size: 15px;
+      color: var(--ink);
+    }
+    .search-box input::placeholder { color: var(--muted); }
+    .search-box input:focus { outline: 2px solid rgba(107, 127, 104, 0.35); border-color: var(--green); }
+    .search-button {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      border: 0;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0;
+    }
+    .search-button svg { width: 100%; height: 100%; }
+
+    .controls { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+    .buttons button {
+      background: none;
+      border: 0;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .buttons button:hover { color: var(--ink); }
+    .buttons button.active { background: var(--chip); color: var(--ink); font-weight: 500; }
+
+    .filter { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
+    .filter select {
+      width: 193px;
+      height: 33px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--card);
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    /* ---------- Projects ---------- */
+    .projects { padding-top: 32px; padding-bottom: 64px; }
+    .results-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .results-bar h3 { font-weight: 400; font-size: 14px; }
+    .results-bar a { font-weight: 500; }
+
+    .sections { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    .pcard {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 26px 26px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sections h3.meta { font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 4px; }
+    .meta .cat { font-weight: 500; }
+    .meta .dot { margin: 0 4px; }
+    .sections h2 { font-family: var(--serif); font-size: 21px; font-weight: 600; margin-bottom: 8px; }
+    .pcard p { color: var(--muted); font-size: 15px; line-height: 1.5; margin-bottom: 20px; }
+    .pcard hr { border: 0; border-top: 1px solid var(--border); margin-top: auto; margin-bottom: 14px; }
+    .sections h3.skill-line { font-size: 13px; font-weight: 400; color: var(--muted); margin-bottom: 28px; }
+    .skills { font-weight: 600; color: var(--ink); margin-right: 3px; }
+
+    .card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .view {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .view:hover { background: var(--bg); }
+    .bookmark {
+      width: 34px; height: 34px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--card);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+    }
+    .bookmark svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+    .bookmark.saved { background: var(--green); border-color: var(--green); color: #fff; }
+    .bookmark.saved svg { fill: currentColor; }
+    .own-tag {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--green);
+      background: #eef2ec;
+      border-radius: 4px;
+      padding: 5px 10px;
+    }
+    .empty {
+      grid-column: 1 / -1;
+      background: var(--card);
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty a { color: var(--green); font-weight: 600; }
+
+    button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 1160px) { .search, .projects { padding-left: 16px; padding-right: 16px; } }
+    @media (max-width: 900px) { .sections { grid-template-columns: 1fr 1fr; } .nav-links { display: none; } }
+    @media (max-width: 600px) { .sections { grid-template-columns: 1fr; } .panel h1 { font-size: 34px; } }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <nav class="nav">
+      <a href="index.html" class="logo">ProjectMatch</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="explore.html" class="active">Explore Projects</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="write.html">Share an Idea</a></li>
+      </ul>
+      <div id="pm-auth"></div>
+    </nav>
+  </header>
+
+  <section class="search">
+    <div class="panel">
+      <h3>DISCOVERY DIRECTORY</h3>
+      <h1>Find a project worth building.</h1>
+      <p>Explore ideas, discover new interests, and find somewhere to contribute.</p>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-box">
+        <button class="search-button" type="button" aria-label="Search" id="search-btn">
+          Search
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        </button>
+        <input type="text" id="search" placeholder="Search projects by title, description, category, or skill (e.g. JavaScript, UI/UX)..." aria-label="Search projects">
+      </div>
+
+      <div class="controls">
+        <div class="buttons" id="categories">
+          <button type="button" class="active" data-category="all">All Categories</button>
+          <button type="button" data-category="Accessibility">Accessibility</button>
+          <button type="button" data-category="Campus Community">Campus Community</button>
+          <button type="button" data-category="Education">Education</button>
+          <button type="button" data-category="Web Development">Web Development</button>
+        </div>
+        <div class="filter">
+          <label for="filter">Stage:</label>
+          <select id="filter">
+            <option value="all">All Stages</option>
+            <option value="In progress">In progress</option>
+            <option value="Looking for teammates">Looking for teammates</option>
+            <option value="Idea stage">Idea stage</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects">
+    <div class="results-bar">
+      <h3 id="count" aria-live="polite">Showing projects</h3>
+      <a href="#" id="reset">Reset filters</a>
+    </div>
+    <div class="sections" id="grid"></div>
+  </section>
+
+  <script>
+/* ProjectMatch shared script
+   Used by every page: accounts, saved/interested state, project posts,
+   the navbar (initials + name) and the project details popup.
+   Everything is stored in the browser (localStorage) - there is no server. */
+(function () {
+  'use strict';
+
+  var KEYS = {
+    users: 'pm_users',
+    current: 'pm_currentUser',
+    posts: 'pm_posts',
+    state: 'pm_state_',     // + email  -> { saved, interested, activity }
+    profile: 'pm_profile_'  // + email  -> { headline, bio, skills, interests }
+  };
+
+  /* ---------- helpers ---------- */
+  function read(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key));
+      return v === null || v === undefined ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+  function write(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+    catch (e) { return false; }
+  }
+
+  // Tiny DOM builder. Text is always inserted as text, never as HTML.
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      var v = attrs[k];
+      if (v === false || v === null || v === undefined) return;
+      if (k === 'class') node.className = v;
+      else if (k === 'text') node.textContent = v;
+      else if (k.slice(0, 2) === 'on' && typeof v === 'function') node.addEventListener(k.slice(2), v);
+      else node.setAttribute(k, v === true ? '' : v);
+    });
+    [].concat(children || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return node;
+  }
+
+  function currentPage() {
+    return location.pathname.split('/').pop() || 'index.html';
+  }
+
+  function timeAgo(ts) {
+    var s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return 'Just now';
+    var m = Math.floor(s / 60);
+    if (m < 60) return m + (m === 1 ? ' minute ago' : ' minutes ago');
+    var h = Math.floor(m / 60);
+    if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+    var d = Math.floor(h / 24);
+    return d === 1 ? 'Yesterday' : d + ' days ago';
+  }
+
+  /* ---------- accounts ---------- */
+  var Auth = {
+    current: function () {
+      var u = read(KEYS.current, null);
+      return u && u.name ? u : null;
+    },
+    initials: function (name) {
+      var p = String(name).trim().split(/\s+/);
+      return ((p[0][0] || '') + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase();
+    },
+    firstName: function (name) { return String(name).trim().split(/\s+/)[0]; },
+    logout: function () { try { localStorage.removeItem(KEYS.current); } catch (e) {} },
+    // Sends the visitor to the login page if nobody is signed in.
+    require: function () {
+      var u = Auth.current();
+      if (!u) location.href = 'login.html?next=' + encodeURIComponent(currentPage());
+      return u;
+    },
+    updateName: function (name) {
+      var u = Auth.current();
+      if (!u) return;
+      var users = read(KEYS.users, []);
+      users.forEach(function (x) { if (x.email === u.email) x.name = name; });
+      write(KEYS.users, users);
+      var posts = read(KEYS.posts, []);
+      posts.forEach(function (x) { if (x.authorEmail === u.email) x.by = name; });
+      write(KEYS.posts, posts);
+      u.name = name;
+      write(KEYS.current, u);
+    }
+  };
+
+  var Profile = {
+    get: function () {
+      var u = Auth.current();
+      var s = u ? read(KEYS.profile + u.email, {}) : {};
+      return { headline: s.headline || '', bio: s.bio || '', skills: s.skills || [], interests: s.interests || [] };
+    },
+    save: function (p) {
+      var u = Auth.current();
+      if (u) write(KEYS.profile + u.email, p);
+    }
+  };
+
+  /* ---------- projects ---------- */
+  var CATEGORIES = ['Accessibility', 'Campus Community', 'Education', 'Web Development'];
+  var STAGES = ['Idea stage', 'In progress', 'Looking for teammates'];
+
+  // Sample projects so the directory is not empty. Replace with your own.
+  var SEED = [
+    {
+      id: 'echospace', title: 'EchoSpace', category: 'Accessibility', stage: 'Looking for teammates',
+      summary: 'A concept for helping students discover more accessible spaces and resources around campus.',
+      desc: 'EchoSpace is designed to make campus navigation transparent and stress-free for all students. It maps physical accessibility routes, quiet sensory study zones, automatic door statuses, and wheelchair-accessible elevator locations in real time. We want to collaborate with student designers and front-end developers to turn preliminary user research into an intuitive prototype.',
+      why: 'Help build a genuine utility for disabled and neurodiverse students on campus while adding an inclusive design case study to your portfolio.',
+      skills: 'UI/UX Design, Frontend', by: 'Maya Chen (Year 3, Design & Ergonomics)'
+    },
+    {
+      id: 'campusconnect', title: 'CampusConnect', category: 'Campus Community', stage: 'Idea stage',
+      summary: 'A student-built concept for bringing campus events, clubs, and student activities into one place.',
+      desc: 'CampusConnect is a student-built concept for bringing campus events, clubs, and student activities into one place. Right now updates are scattered across noticeboards, group chats, and email lists. The goal is a single, searchable feed that helps students find what is happening and get involved.',
+      why: 'Shape a project from the ground up, practise leading a small team, and build a portfolio piece that solves a problem every student recognises.',
+      skills: 'JavaScript, UI/UX', by: 'Priya Nair (Year 2, Computer Science)'
+    },
+    {
+      id: 'studyflow', title: 'StudyFlow', category: 'Education', stage: 'In progress',
+      summary: 'A simple study-planning tool that helps students organize learning resources and track their academic tasks.',
+      desc: 'StudyFlow is a simple study-planning tool that helps students organise learning resources and track their academic tasks. The core planner is under way, and the team is now working on reminders, a weekly view, and a clean way to group notes by module.',
+      why: 'Join a project that is already moving, contribute to real features quickly, and gain hands-on experience with a front-end codebase.',
+      skills: 'HTML, CSS, JavaScript', by: 'Daniel Okafor (Year 2, Information Systems)'
+    },
+    {
+      id: 'portfoliopal', title: 'PortfolioPal', category: 'Web Development', stage: 'In progress',
+      summary: 'A template-based portfolio builder that helps students publish a clean personal site in an afternoon.',
+      desc: 'PortfolioPal gives students a handful of well-designed templates and a guided way to fill them in with projects, skills, and contact details. The first template is working and we are now building the editor and a one-click export.',
+      why: 'Work on something you will actually use yourself, and practise building reusable components and clean CSS.',
+      skills: 'HTML, CSS, UI/UX Design', by: 'Sam Rivera (Year 3, Software Engineering)'
+    },
+    {
+      id: 'greencampus', title: 'GreenCampus', category: 'Campus Community', stage: 'Looking for teammates',
+      summary: 'A simple map of recycling points, refill stations, and bike racks around campus.',
+      desc: 'GreenCampus is a lightweight map that shows where to recycle, refill a water bottle, or lock up a bike. We have collected the locations for two buildings and need help designing the map view and building a simple filter so students can find what they need quickly.',
+      why: 'Turn a small, clear idea into a finished prototype and add a real campus-impact project to your portfolio.',
+      skills: 'JavaScript, UI/UX Design', by: 'Lena Fischer (Year 1, Environmental Science)'
+    },
+    {
+      id: 'codebuddy', title: 'CodeBuddy', category: 'Education', stage: 'Idea stage',
+      summary: 'A matching tool that pairs beginner coders with peer mentors for short weekly pairing sessions.',
+      desc: 'CodeBuddy would let first-year students request a short pairing session on a topic they are stuck on, and let more experienced students offer slots. The idea is still on paper: we are looking for people to help shape the matching rules and sketch the first screens.',
+      why: 'Help shape a product from the very start and practise designing for two different kinds of users.',
+      skills: 'JavaScript, UI/UX', by: 'Omar Haddad (Year 4, Computer Science)'
+    }
+  ];
+
+  var Projects = {
+    categories: CATEGORIES,
+    stages: STAGES,
+    // newest posts first, then the samples
+    all: function () { return read(KEYS.posts, []).slice().reverse().concat(SEED); },
+    get: function (id) {
+      var list = Projects.all();
+      for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+      return null;
+    },
+    isOwn: function (p) {
+      var u = Auth.current();
+      return !!(u && p && p.authorEmail && p.authorEmail === u.email);
+    },
+    add: function (d) {
+      var u = Auth.current();
+      if (!u) return null;
+      var post = {
+        id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        title: d.title, category: d.category, stage: d.stage, summary: d.summary,
+        desc: d.desc, why: d.why || '', skills: d.skills,
+        by: u.name, authorEmail: u.email, createdAt: Date.now()
+      };
+      var posts = read(KEYS.posts, []);
+      posts.push(post);
+      if (!write(KEYS.posts, posts)) return null;
+      var s = State.get();
+      logTo(s, 'posted', post);
+      State.put(s);
+      return post;
+    },
+    remove: function (id) {
+      var p = Projects.get(id);
+      if (!p || !Projects.isOwn(p)) return false;
+      write(KEYS.posts, read(KEYS.posts, []).filter(function (x) { return x.id !== id; }));
+      var s = State.get();
+      s.saved = s.saved.filter(function (x) { return x !== id; });
+      s.interested = s.interested.filter(function (x) { return x !== id; });
+      logTo(s, 'deleted', p);
+      State.put(s);
+      return true;
+    },
+    // Everyone (in this browser) who expressed interest in a project
+    interested: function (id) {
+      var out = [];
+      read(KEYS.users, []).forEach(function (u) {
+        var s = read(KEYS.state + u.email, null);
+        if (s && s.interested && s.interested.indexOf(id) !== -1) out.push({ name: u.name, email: u.email });
+      });
+      return out;
+    }
+  };
+
+  /* ---------- saved / interested / activity (per account) ---------- */
+  function logTo(s, type, p) {
+    s.activity.unshift({ type: type, id: p.id, title: p.title, at: Date.now() });
+    s.activity = s.activity.slice(0, 20);
+  }
+
+  var State = {
+    get: function () {
+      var u = Auth.current();
+      var s = (u && read(KEYS.state + u.email, null)) || {};
+      return { saved: s.saved || [], interested: s.interested || [], activity: s.activity || [] };
+    },
+    put: function (s) {
+      var u = Auth.current();
+      if (u) write(KEYS.state + u.email, s);
+    },
+    has: function (kind, id) { return State.get()[kind].indexOf(id) !== -1; },
+    // kind: 'saved' | 'interested'. Returns the new on/off value.
+    toggle: function (kind, id) {
+      var p = Projects.get(id);
+      if (!p || Projects.isOwn(p)) return false;
+      var s = State.get();
+      var i = s[kind].indexOf(id);
+      var on = i === -1;
+      if (on) s[kind].push(id); else s[kind].splice(i, 1);
+      logTo(s, kind === 'saved' ? (on ? 'saved' : 'unsaved') : (on ? 'interested' : 'uninterested'), p);
+      State.put(s);
+      return on;
+    }
+  };
+
+  var ACTIVITY_TEXT = {
+    saved: ['Saved ', ' to your dashboard'],
+    unsaved: ['Removed ', ' from your saved projects'],
+    interested: ['Expressed interest in ', ''],
+    uninterested: ['Withdrew your interest in ', ''],
+    posted: ['Posted your idea ', ''],
+    deleted: ['Deleted your idea ', '']
+  };
+
+  function activityNode(a, onOpen) {
+    var parts = ACTIVITY_TEXT[a.type] || ['', ''];
+    var live = a.type !== 'deleted' && Projects.get(a.id);
+    var title = live
+      ? el('a', { href: '#', text: a.title, onclick: function (e) { e.preventDefault(); if (onOpen) onOpen(a.id); } })
+      : el('strong', { text: a.title });
+    return el('li', {}, [parts[0], title, parts[1], el('time', { text: timeAgo(a.at) })]);
+  }
+
+  /* ---------- shared styles (navbar account area, popups, form fields) ---------- */
+  var CSS = [
+    '.pm-auth{display:flex;align-items:center;gap:14px}',
+    '.pm-user{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--ink,#1c2420);text-decoration:none}',
+    '.pm-avatar{width:28px;height:28px;border-radius:50%;background:#e4e8e1;font-size:10px;font-weight:600;display:grid;place-items:center}',
+    '.pm-logout{background:none;border:0;color:var(--muted,#5b625d);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}',
+    '.pm-login{color:var(--muted,#5b625d);font-size:14px;text-decoration:none}',
+    '.pm-signup{background:var(--green,#6b7f68);color:#fff;border-radius:4px;padding:8px 16px;font-size:14px;font-weight:500;text-decoration:none}',
+
+    'body.pm-modal-open{overflow:hidden}',
+    '.pm-overlay{position:fixed;inset:0;background:rgba(28,36,32,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:100}',
+    '.pm-modal{position:relative;background:var(--card,#fff);color:var(--ink,#1c2420);border-radius:10px;width:100%;max-width:680px;max-height:calc(100vh - 32px);overflow-y:auto;padding:40px 42px 34px;box-shadow:0 20px 50px rgba(0,0,0,.2);font-family:var(--sans,system-ui,sans-serif);font-size:15px;line-height:1.5}',
+    '.pm-modal.narrow{max-width:520px}',
+    '.pm-close{position:absolute;top:30px;right:30px;width:28px;height:28px;border:0;background:none;color:inherit;font-size:24px;line-height:1;cursor:pointer}',
+    '.pm-meta{color:var(--green,#6b7f68);font-size:13px;font-weight:500;margin-bottom:6px;padding-right:40px}',
+    '.pm-modal h2{font-family:var(--serif,Georgia,serif);font-size:28px;font-weight:600;line-height:1.2;margin-bottom:4px;padding-right:40px}',
+    '.pm-by{color:var(--muted,#5b625d);font-size:14px;margin-bottom:24px}',
+    '.pm-by strong{color:#3b423e;font-weight:600}',
+    '.pm-desc{color:var(--muted,#5b625d);font-size:17px;line-height:1.6;margin-bottom:24px}',
+    '.pm-modal h5{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}',
+    '.pm-text{color:var(--muted,#5b625d);margin-bottom:24px}',
+    '.pm-people{list-style:none;margin-bottom:24px;color:var(--muted,#5b625d);font-size:14px}',
+    '.pm-people li{margin-bottom:4px}.pm-people a{color:#25406a}',
+    '.pm-foot{border-top:1px solid var(--border,#e3e3dc);padding-top:22px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}',
+    '.pm-note{color:var(--muted,#5b625d);font-size:13px}',
+    '.pm-btn{background:var(--card,#fff);border:1px solid var(--border,#e3e3dc);border-radius:4px;padding:9px 16px;font:inherit;font-size:14px;font-weight:500;color:var(--ink,#1c2420);cursor:pointer}',
+    '.pm-btn:hover{background:var(--bg,#f8f8f4)}',
+    '.pm-interest{border-color:var(--green,#6b7f68);color:var(--green,#6b7f68)}',
+    '.pm-interest.on{background:var(--green,#6b7f68);color:#fff}',
+    '.pm-primary{background:var(--green,#6b7f68);color:#fff;border:1px solid var(--green,#6b7f68);border-radius:6px;padding:10px 18px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}',
+    '.pm-primary:hover{filter:brightness(.94)}',
+    '.pm-btn:focus-visible,.pm-primary:focus-visible,.pm-close:focus-visible{outline:2px solid var(--green,#6b7f68);outline-offset:2px}',
+
+    '.pm-field{margin-bottom:16px}',
+    '.pm-field label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}',
+    '.pm-field input,.pm-field select,.pm-field textarea{width:100%;font:inherit;font-size:14px;color:var(--ink,#1c2420);background:#fff;border:1px solid var(--border,#e3e3dc);border-radius:5px}',
+    '.pm-field input,.pm-field select{height:41px;padding:0 12px}',
+    '.pm-field textarea{padding:10px 12px;min-height:96px;resize:vertical;line-height:1.5}',
+    '.pm-field input:focus,.pm-field select:focus,.pm-field textarea:focus{outline:2px solid rgba(107,127,104,.35);border-color:var(--green,#6b7f68)}',
+    '.pm-field [aria-invalid="true"]{border-color:#b3402f}',
+    '.pm-hint{color:var(--muted,#5b625d);font-size:12px;margin-top:5px}',
+    '.pm-error{color:#b3402f;font-size:12px;margin-top:5px}',
+    '.pm-error:empty{display:none}',
+
+    '@media (max-width:700px){.pm-modal{padding:28px 22px 24px}.pm-close{top:20px;right:16px}}'
+  ].join('\n');
+
+  function injectStyles() {
+    if (document.getElementById('pm-shared-style')) return;
+    var style = document.createElement('style');
+    style.id = 'pm-shared-style';
+    style.textContent = CSS;
+    document.head.appendChild(style);
+  }
+
+  /* ---------- navbar account area ---------- */
+  function renderNav() {
+    var box = document.getElementById('pm-auth');
+    if (!box) return;
+    box.className = 'pm-auth';
+    box.textContent = '';
+    var u = Auth.current();
+    if (u) {
+      var logout = el('button', { class: 'pm-logout', type: 'button', text: 'Log out' });
+      logout.addEventListener('click', function () { Auth.logout(); location.href = 'index.html'; });
+      box.appendChild(el('a', { class: 'pm-user', href: 'dashboard.html', title: 'Your dashboard and profile' }, [
+        el('span', { class: 'pm-avatar', text: Auth.initials(u.name) }),
+        el('span', { text: Auth.firstName(u.name) })
+      ]));
+      box.appendChild(logout);
+    } else {
+      box.appendChild(el('a', { class: 'pm-login', href: 'login.html', text: 'Login' }));
+      box.appendChild(el('a', { class: 'pm-signup', href: 'register.html', text: 'Sign Up' }));
+    }
+  }
+
+  /* ---------- popups ---------- */
+  function openModal(content, extraClass) {
+    var previous = document.activeElement;
+    var closeBtn = el('button', { class: 'pm-close', type: 'button', 'aria-label': 'Close', text: '×' });
+    var box = el('div', { class: 'pm-modal' + (extraClass ? ' ' + extraClass : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'pm-modal-title' }, [closeBtn, content]);
+    var overlay = el('div', { class: 'pm-overlay' }, box);
+
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    function close() {
+      document.removeEventListener('keydown', onKey);
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      document.body.classList.remove('pm-modal-open');
+      if (previous && previous.focus) previous.focus();
+    }
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('mousedown', function (e) { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', onKey);
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('pm-modal-open');
+    closeBtn.focus();
+    return { close: close };
+  }
+
+  // Project details popup with Save and "I'm interested" toggles.
+  // onChange runs after anything changes so the page can refresh itself.
+  function openProject(id, onChange) {
+    var p = Projects.get(id);
+    if (!p) return null;
+    var own = Projects.isOwn(p);
+    var modal;
+
+    var parts = [
+      el('p', { class: 'pm-meta', text: p.category + ' · ' + p.stage }),
+      el('h2', { id: 'pm-modal-title', text: p.title }),
+      el('p', { class: 'pm-by' }, ['Initiated by ', el('strong', { text: p.by + (own ? ' (you)' : '') })]),
+      el('p', { class: 'pm-desc', text: p.desc })
+    ];
+    if (p.why) parts.push(el('h5', { text: 'Why join this project?' }), el('p', { class: 'pm-text', text: p.why }));
+    if (p.skills) parts.push(el('h5', { text: 'Skills needed' }), el('p', { class: 'pm-text', text: p.skills }));
+
+    if (own) {
+      var people = Projects.interested(id);
+      parts.push(el('h5', { text: 'People interested' }));
+      parts.push(people.length
+        ? el('ul', { class: 'pm-people' }, people.map(function (x) {
+            return el('li', {}, [x.name + ' — ', el('a', { href: 'mailto:' + x.email, text: x.email })]);
+          }))
+        : el('p', { class: 'pm-text', text: 'No one has expressed interest yet.' }));
+      parts.push(el('div', { class: 'pm-foot' }, [
+        el('button', {
+          class: 'pm-btn', type: 'button', text: 'Delete idea',
+          onclick: function () {
+            if (!confirm('Delete "' + p.title + '"? This cannot be undone.')) return;
+            Projects.remove(id);
+            modal.close();
+            if (onChange) onChange();
+          }
+        }),
+        el('span', { class: 'pm-note', text: 'You started this project.' })
+      ]));
+    } else {
+      var saveBtn = el('button', { class: 'pm-btn', type: 'button' });
+      var interestBtn = el('button', { class: 'pm-btn pm-interest', type: 'button' });
+      var paint = function () {
+        var saved = State.has('saved', id), interested = State.has('interested', id);
+        saveBtn.textContent = saved ? 'Saved' : 'Save';
+        saveBtn.setAttribute('aria-pressed', String(saved));
+        interestBtn.textContent = interested ? '✓ Interest Expressed' : "I'm interested";
+        interestBtn.classList.toggle('on', interested);
+        interestBtn.setAttribute('aria-pressed', String(interested));
+      };
+      var handler = function (kind) {
+        return function () {
+          if (!Auth.require()) return;
+          State.toggle(kind, id);
+          paint();
+          if (onChange) onChange();
+        };
+      };
+      saveBtn.addEventListener('click', handler('saved'));
+      interestBtn.addEventListener('click', handler('interested'));
+      paint();
+      parts.push(el('div', { class: 'pm-foot' }, [saveBtn, interestBtn]));
+    }
+
+    modal = openModal(el('div', {}, parts));
+    return modal;
+  }
+
+  /* ---------- start ---------- */
+  injectStyles();
+  function start() { renderNav(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+
+  window.PM = {
+    el: el, timeAgo: timeAgo, Auth: Auth, Profile: Profile, Projects: Projects, State: State,
+    renderNav: renderNav, activityNode: activityNode,
+    ui: { openModal: openModal, openProject: openProject }
+  };
+})();
+
+  </script>
+  <script>
+    (function () {
+      var el = PM.el;
+      var filters = { category: 'all', stage: 'all', q: '' };
+
+      var grid = document.getElementById('grid');
+      var count = document.getElementById('count');
+      var search = document.getElementById('search');
+      var stage = document.getElementById('filter');
+      var catBox = document.getElementById('categories');
+
+      var BOOKMARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>';
+
+      function matches(p) {
+        if (filters.category !== 'all' && p.category !== filters.category) return false;
+        if (filters.stage !== 'all' && p.stage !== filters.stage) return false;
+        if (filters.q) {
+          var hay = [p.title, p.summary, p.desc, p.category, p.skills, p.stage].join(' ').toLowerCase();
+          return filters.q.split(/\s+/).every(function (w) { return hay.indexOf(w) !== -1; });
+        }
+        return true;
+      }
+
+      function card(p) {
+        var action;
+        if (PM.Projects.isOwn(p)) {
+          action = el('span', { class: 'own-tag', text: 'Your idea' });
+        } else {
+          var saved = PM.State.has('saved', p.id);
+          action = el('button', {
+            class: 'bookmark' + (saved ? ' saved' : ''), type: 'button',
+            'aria-label': 'Save ' + p.title, 'aria-pressed': String(saved)
+          });
+          action.innerHTML = BOOKMARK;   // fixed icon markup, no user text
+          action.addEventListener('click', function () {
+            if (!PM.Auth.require()) return;
+            var on = PM.State.toggle('saved', p.id);
+            action.classList.toggle('saved', on);
+            action.setAttribute('aria-pressed', String(on));
+          });
+        }
+        return el('article', { class: 'pcard' }, [
+          el('h3', { class: 'meta' }, [el('span', { class: 'cat', text: p.category }), el('span', { class: 'dot', text: '·' }), p.stage]),
+          el('h2', { text: p.title }),
+          el('p', { text: p.summary }),
+          el('hr'),
+          el('h3', { class: 'skill-line' }, [el('span', { class: 'skills', text: 'Skills:' }), ' ' + p.skills]),
+          el('div', { class: 'card-footer' }, [
+            el('button', { class: 'view', type: 'button', text: 'View Project', onclick: function () { PM.ui.openProject(p.id, render); } }),
+            action
+          ])
+        ]);
+      }
+
+      function render() {
+        var list = PM.Projects.all().filter(matches);
+        count.textContent = 'Showing ' + list.length + (list.length === 1 ? ' project' : ' projects');
+        grid.textContent = '';
+        if (!list.length) {
+          grid.appendChild(el('div', { class: 'empty' }, ['No projects match your search. ', el('a', { href: '#', text: 'Reset filters', onclick: reset })]));
+          return;
+        }
+        list.forEach(function (p) { grid.appendChild(card(p)); });
+      }
+
+      function setCategory(value) {
+        filters.category = value;
+        [].forEach.call(catBox.querySelectorAll('button'), function (b) {
+          b.classList.toggle('active', b.getAttribute('data-category') === value);
+        });
+      }
+
+      function reset(e) {
+        if (e) e.preventDefault();
+        filters.stage = 'all'; filters.q = '';
+        search.value = ''; stage.value = 'all';
+        setCategory('all');
+        render();
+      }
+
+      catBox.addEventListener('click', function (e) {
+        var b = e.target.closest('button');
+        if (!b) return;
+        setCategory(b.getAttribute('data-category'));
+        render();
+      });
+      stage.addEventListener('change', function () { filters.stage = stage.value; render(); });
+      search.addEventListener('input', function () { filters.q = search.value.trim().toLowerCase(); render(); });
+      document.getElementById('search-btn').addEventListener('click', function () { search.focus(); });
+      document.getElementById('reset').addEventListener('click', reset);
+
+      render();
+    })();
+  </script>
+</body>
+</html>
