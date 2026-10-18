@@ -64,17 +64,6 @@
       font-size: 19px;
       font-weight: 600;
     }
-    .logo::before {
-      content: "P";
-      width: 22px;
-      height: 22px;
-      border-radius: 5px;
-      background: var(--green);
-      color: #fff;
-      font-size: 12px;
-      display: grid;
-      place-items: center;
-    }
     .navlinks { display: flex; gap: 28px; }
     .navlinks a { color: var(--muted); padding: 8px 0; }
     .navlinks a:first-child {
@@ -82,43 +71,6 @@
       font-weight: 500;
       box-shadow: 0 2px 0 var(--green);
     }
-    .nav .button { display: flex; align-items: center; gap: 16px; }
-    .nav .button a { color: var(--muted); font-size: 14px; }
-    .signup {
-      background: var(--green);
-      color: #fff;
-      border: 0;
-      border-radius: 4px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .nav .user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--ink);
-    }
-    .nav .avatar {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      background: #e4e8e1;
-      font-size: 10px;
-      font-weight: 600;
-      display: grid;
-      place-items: center;
-    }
-    .nav .logout {
-      background: none;
-      border: 0;
-      color: var(--muted);
-      font-size: 13px;
-      text-decoration: underline;
-    }
-
     /* ---------- Hero ---------- */
     .hero-section {
       max-width: 1112px;
@@ -235,6 +187,42 @@
     }
     .cards p { color: var(--muted); font-size: 14px; }
 
+
+    /* ---------- Illustrated sections ---------- */
+    .icon { width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; margin-bottom: 16px; }
+    .icon svg { width: 22px; height: 22px; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+    .showcase-wrap { margin-top: 72px; }
+    .showcase-wrap.band { background: var(--card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .showcase {
+      max-width: 1112px;
+      margin: 0 auto;
+      padding: 72px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .show-art .illustration { width: 100%; height: auto; display: block; }
+    .show-text h2 { font-family: var(--serif); font-size: 34px; font-weight: 600; line-height: 1.2; margin: 12px 0 16px; }
+    .show-text p:not(.eyebrow) { color: var(--muted); max-width: 460px; margin-bottom: 26px; }
+
+    .testimonials { max-width: 1112px; margin: 0 auto; padding: 80px 16px 0; text-align: center; }
+    .testimonials h2 { font-family: var(--serif); font-size: 32px; font-weight: 600; line-height: 1.25; margin: 12px auto 40px; max-width: 520px; }
+    .quotes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; text-align: center; }
+    .quote { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 32px 32px 30px; }
+    .avatar-img { width: 64px; height: 64px; border-radius: 50%; display: block; margin: 0 auto 12px; }
+    .quote figcaption strong { display: block; font-size: 15px; font-weight: 600; }
+    .quote figcaption span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .quote blockquote { color: var(--muted); font-size: 14px; max-width: 420px; margin: 0 auto; }
+
     /* ---------- Framework ---------- */
     .framework {
       max-width: 1112px;
@@ -322,23 +310,24 @@
       .next .butt { grid-column: 1; grid-row: auto; flex-wrap: wrap; }
       .framework { padding: 28px 20px; border-radius: 10px; }
       .footer { grid-template-columns: 1fr; }
+      .showcase { grid-template-columns: 1fr; gap: 32px; padding: 48px 16px; }
+      .show-art { order: -1; }
+      .show-text h2 { font-size: 28px; }
+      .quotes { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <section class="navbar">
   <div class="nav">
-    <div class="logo"> ProjectMatch</div>
+    <a href="index.html" class="logo"> ProjectMatch</a>
     <div class="navlinks">
       <a href="index.html">Home</a>
       <a href="explore.html">Explore Projects</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="profile.html">Profile</a>
     </div>
-    <div class="button" id="auth">
-      <a href="login.html">Login</a>
-      <button class="signup" onclick="location.href='register.html'">Sign Up</button>
-    </div>
+    <div id="pm-auth"></div>
   </div>
   </section>
 
@@ -350,8 +339,8 @@
         <h1>YOUR NEXT PROJECT STARTS WITH THE RIGHT PEOPLE.</h1>
         <p>Discover student-led ideas, find projects that match your interests, and turn what you know into something real.</p>
         <div class="button">
-          <button class="explore-project">Explore Project</button>
-          <button class="share-project">Share a Project Idea</button>
+          <button class="explore-project" onclick="location.href='explore.html'">Explore Project</button>
+          <button class="share-project" onclick="location.href='dashboard.html'">Go to Dashboard</button>
         </div>
 
         <!-- right box -->
@@ -361,7 +350,7 @@
           <p>A concept for helping students discover more accessible spaces, elevator statuses, and sensory study rooms around campus.</p>
           <hr>
           <p>Looking for teammates</p>
-          <button class="explore-project2">Explore Project</button>
+          <button class="explore-project2" onclick="location.href='explore.html'">Explore Project</button>
          </div>
       </div>
     </div>
@@ -379,22 +368,182 @@ ProjectMatch provides a relaxed, low-pressure space to test student concepts, as
   </div>
   <div class="cards">
     <div class="card1">
+      <span class="icon" style="background:#6b7f68"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></span>
       <h3>01 · Explore Concepts</h3>
       <h2>Discover what peers are creating</h2>
       <p>Browse initiatives proposed by students across computer science, design, and other majors. No finished product required — even early notes or problem briefs are welcomed.</p>
     </div>
 
     <div class="card2">
+      <span class="icon" style="background:#c8963a"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/></svg></span>
       <h3>02 · Validate Direction</h3>
       <h2>See if it is okay to go with it</h2>
       <p>Find out whether fellow students resonate with the problem before writing hundreds of lines of code. Gauge community interest, discuss feasibility, and decide if the concept has legs.</p>
     </div>
 
      <div class="card3">
+      <span class="icon" style="background:#4f7ea8"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5v2M3 13h18"/></svg></span>
       <h3>03 · Practical Experience</h3>
       <h2>Turn skills into a portfolio piece</h2>
       <p>Find a project that matches what you want to practice — whether you're learning HTML/CSS, experimenting with Figma, or structuring accessible workflows for real users.</p>
     </div>
+  </div>
+</section>
+
+<!-- illustrated section: everything in one place -->
+<section class="showcase-wrap">
+  <div class="showcase">
+    <div class="show-art">
+      <svg class="illustration" viewBox="0 0 560 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A student working on a laptop with a project window beside her">
+  <ellipse cx="280" cy="228" rx="262" ry="148" fill="#eef2ec"/>
+  <path d="M60 352H508" stroke="#cdd5cb" stroke-width="2.4" stroke-linecap="round"/>
+  <g stroke="#1c2420" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="#fff">
+    <!-- project window bubble -->
+    <g transform="translate(40 0)">
+    <path d="M260 18H480a10 10 0 0 1 10 10V148a10 10 0 0 1-10 10H300L262 190 274 158H260a10 10 0 0 1-10-10V28a10 10 0 0 1 10-10Z"/>
+    <path d="M250 44H490" fill="none"/>
+    <circle cx="266" cy="31" r="3" fill="#1c2420" stroke="none"/>
+    <circle cx="278" cy="31" r="3" fill="#1c2420" stroke="none"/>
+    <circle cx="290" cy="31" r="3" fill="#1c2420" stroke="none"/>
+    <rect x="268" y="58" width="154" height="26" rx="3" fill="#e8ede6"/>
+    <rect x="268" y="98" width="46" height="40" rx="3"/>
+    <rect x="324" y="98" width="46" height="40" rx="3"/>
+    <rect x="380" y="98" width="42" height="40" rx="3"/>
+    <rect x="434" y="58" width="38" height="80" rx="3" fill="#6b7f68"/>
+    </g>
+
+    <!-- person -->
+    <path d="M196 112C184 146 188 176 202 192L214 150Z" fill="#1c2420"/>
+    <path d="M264 112C276 146 272 176 258 192L246 150Z" fill="#1c2420"/>
+    <path d="M140 236C140 192 180 176 230 176S320 192 320 236Z" fill="#6b7f68"/>
+    <path d="M220 148v32h20v-32" fill="#fff"/>
+    <circle cx="230" cy="118" r="36" fill="#fff"/>
+    <path d="M194 120C186 82 214 70 232 72 258 72 276 92 266 124 262 104 248 96 232 96 214 96 202 104 194 120Z" fill="#1c2420"/>
+    <circle cx="217" cy="124" r="8" fill="none"/>
+    <circle cx="243" cy="124" r="8" fill="none"/>
+    <path d="M225 124h10" fill="none"/>
+    <path d="M221 141q9 7 18 0" fill="none"/>
+
+    <!-- laptop -->
+    <rect x="128" y="212" width="204" height="116" rx="8"/>
+    <circle cx="230" cy="270" r="10" fill="#e8ede6"/>
+    <rect x="92" y="328" width="276" height="16" rx="7" fill="#e8ede6"/>
+    <ellipse cx="182" cy="330" rx="17" ry="8"/>
+    <ellipse cx="278" cy="330" rx="17" ry="8"/>
+
+    <!-- mug -->
+    <path d="M396 300h34v36a8 8 0 0 1-8 8h-18a8 8 0 0 1-8-8Z"/>
+    <path d="M430 310h6a8 8 0 0 1 0 16h-6" fill="none"/>
+    <path d="M406 292q-5-8 0-14M418 292q-5-8 0-14" fill="none"/>
+
+    <!-- sparkles -->
+    <path d="M62 96v16M54 104h16M510 214v12M504 220h12" fill="none" stroke="#6b7f68"/>
+    <circle cx="96" cy="150" r="4" fill="#6b7f68" stroke="none"/>
+    <circle cx="486" cy="190" r="3" fill="#6b7f68" stroke="none"/>
+  </g>
+</svg>
+    </div>
+    <div class="show-text">
+      <p class="eyebrow">All in one place</p>
+      <h2>Browse, save, and follow every project in one place.</h2>
+      <p>Keep the ideas you like, track the ones you have joined, and see your recent activity on a single dashboard. No more scattered noticeboards and group chats.</p>
+      <button class="explore-project" onclick="location.href='dashboard.html'">Open your dashboard</button>
+    </div>
+  </div>
+</section>
+
+<!-- illustrated section: launch an idea -->
+<section class="showcase-wrap band">
+  <div class="showcase">
+    <div class="show-text">
+      <p class="eyebrow">Build real experience</p>
+      <h2>Join a project and turn what you know into something real.</h2>
+      <p>Find a project that matches your skills, tell the team you are interested, and start building real experience together.</p>
+      <button class="explore-project" onclick="location.href='explore.html'">Explore Projects</button>
+    </div>
+    <div class="show-art">
+      <svg class="illustration" viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A student riding a rocket with project icons floating around">
+  <ellipse cx="270" cy="220" rx="235" ry="160" fill="#eef2ec"/>
+  <g stroke="#1c2420" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="#fff">
+    <!-- cloud -->
+    <path d="M60 330a22 22 0 0 1 22-22 30 30 0 0 1 58-6 24 24 0 0 1 8 46H74a16 16 0 0 1-14-18Z"/>
+
+    <!-- rocket -->
+    <g transform="translate(272 236) rotate(38)">
+      <path d="M-14 62C-10 92 0 106 0 116 0 106 10 92 14 62Z" fill="#e8b04a"/>
+      <path d="M-40 18L-74 78-40 58Z" fill="#6b7f68"/>
+      <path d="M40 18L74 78 40 58Z" fill="#6b7f68"/>
+      <path d="M0 -120C38 -86 46 -30 42 52H-42C-46 -30 -38 -86 0 -120Z"/>
+      <path d="M0 -120C14 -106 24 -92 30 -76H-30C-24 -92 -14 -106 0 -120Z" fill="#6b7f68"/>
+      <circle cx="0" cy="-34" r="17" fill="#e8ede6"/>
+      <circle cx="0" cy="-34" r="9"/>
+      <rect x="-20" y="52" width="40" height="10" rx="3" fill="#e8ede6"/>
+      <path d="M-42 20H42" fill="none"/>
+    </g>
+
+    <!-- person: legs -->
+    <path d="M262 206L242 236 252 268" fill="none" stroke="#1c2420" stroke-width="16"/>
+    <path d="M268 210L290 240 284 270" fill="none" stroke="#1c2420" stroke-width="16"/>
+    <!-- waving arm (behind body) -->
+    <path d="M290 156L322 124 338 98" fill="none" stroke="#1c2420" stroke-width="13"/>
+    <path d="M290 156L322 124 338 98" fill="none" stroke="#fff" stroke-width="8.5"/>
+    <!-- torso + tie -->
+    <path d="M250 208C246 178 252 150 268 144L296 150C302 168 300 192 290 212Z"/>
+    <path d="M280 152l7 6-4 26-8-26Z" fill="#6b7f68"/>
+    <!-- other arm -->
+    <path d="M262 156L242 190 256 206" fill="none" stroke="#1c2420" stroke-width="13"/>
+    <path d="M262 156L242 190 256 206" fill="none" stroke="#fff" stroke-width="8.5"/>
+    <!-- head + hair -->
+    <circle cx="280" cy="120" r="23"/>
+    <path d="M258 116c-6-18 6-30 20-30 6-10 22-8 26 2 12 2 14 18 4 24-4-8-12-12-22-10-10-4-22 2-28 14Z" fill="#1c2420"/>
+    <circle cx="274" cy="124" r="1.8" fill="#1c2420" stroke="none"/>
+    <circle cx="288" cy="124" r="1.8" fill="#1c2420" stroke="none"/>
+    <path d="M273 133q7 6 15 0" fill="none"/>
+
+    <!-- floating clipboard -->
+    <rect x="96" y="112" width="52" height="64" rx="6" transform="rotate(-8 122 144)"/>
+    <g transform="rotate(-8 122 144)" fill="none">
+      <rect x="110" y="106" width="24" height="12" rx="4" fill="#e8ede6"/>
+      <path d="M106 134h30M106 148h30M106 162h18"/>
+    </g>
+    <!-- floating calendar -->
+    <rect x="388" y="300" width="70" height="62" rx="6"/>
+    <path d="M388 322H458" fill="none"/>
+    <rect x="388" y="300" width="70" height="22" rx="6" fill="#6b7f68"/>
+    <path d="M406 294v12M440 294v12" fill="none"/>
+    <circle cx="406" cy="338" r="3.5" fill="#1c2420" stroke="none"/>
+    <circle cx="423" cy="338" r="3.5" fill="#1c2420" stroke="none"/>
+    <circle cx="440" cy="338" r="3.5" fill="#1c2420" stroke="none"/>
+    <circle cx="406" cy="351" r="3.5" fill="#6b7f68" stroke="none"/>
+    <circle cx="423" cy="351" r="3.5" fill="#1c2420" stroke="none"/>
+    <!-- small gear/clock -->
+    <circle cx="430" cy="196" r="17"/>
+    <path d="M430 186v10l7 5" fill="none"/>
+    <!-- sparkles -->
+    <path d="M70 224v14M63 231h14M466 120v12M460 126h12" fill="none" stroke="#6b7f68"/>
+    <circle cx="170" cy="100" r="3" fill="#6b7f68" stroke="none"/>
+    <circle cx="380" cy="86" r="4" fill="#6b7f68" stroke="none"/>
+  </g>
+</svg>
+    </div>
+  </div>
+</section>
+
+<!-- testimonials (sample text, replace with real quotes) -->
+<section class="testimonials">
+  <p class="eyebrow">Student stories</p>
+  <h2>Check what students say about ProjectMatch</h2>
+  <div class="quotes">
+    <figure class="quote">
+      <svg class="avatar-img" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#e4e8e1"/><path d="M12 64c0-15 9-23 20-23s20 8 20 23Z" fill="#6b7f68"/><circle cx="32" cy="28" r="11" fill="#fff" stroke="#1c2420" stroke-width="2"/><path d="M20 28c-2-12 6-17 13-17 8 0 13 6 11 17-3-6-8-8-12-7-5 0-9 3-12 7Z" fill="#1c2420"/></svg>
+      <figcaption><strong>Hannah B.</strong><span>Computer Science · Year 2</span></figcaption>
+      <blockquote>I had a half-finished app idea and no designer. Within a week two people with UI/UX skills had joined, and we had a prototype before exams.</blockquote>
+    </figure>
+    <figure class="quote">
+      <svg class="avatar-img" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" fill="#f3e6c8"/><path d="M12 64c0-15 9-23 20-23s20 8 20 23Z" fill="#4f7ea8"/><circle cx="32" cy="28" r="11" fill="#fff" stroke="#1c2420" stroke-width="2"/><path d="M21 25c1-8 6-11 11-11s10 3 11 11c-3-3-7-4-11-4s-8 1-11 4Z" fill="#1c2420"/></svg>
+      <figcaption><strong>Marcus T.</strong><span>Interaction Design · Year 3</span></figcaption>
+      <blockquote>I wanted real projects for my portfolio. ProjectMatch helped me find a team that needed exactly the skills I was learning.</blockquote>
+    </figure>
   </div>
 </section>
 <!-- framework -->
@@ -427,10 +576,10 @@ ProjectMatch provides a relaxed, low-pressure space to test student concepts, as
 
     <div class="next">
       <h2>Ready to take the next step?</h2>
-      <p>Explore active student ideas in the directory or share an early concept with campus.</p>
+      <p>Explore active student ideas in the directory, then save the ones you like to your dashboard.</p>
       <div class="butt">
-        <button class="pro">Explore Project</button>
-        <button class="share">Share a Project Idea</button>
+        <button class="pro" onclick="location.href='explore.html'">Explore Project</button>
+        <button class="share" onclick="location.href='dashboard.html'">Go to Dashboard</button>
       </div>
     </div>
   </div>
@@ -444,32 +593,448 @@ ProjectMatch provides a relaxed, low-pressure space to test student concepts, as
     </div>
     <div class="footer-right">
       <h3>Platform Links</h3>
-      <a href="#">Home</a>
-      <a href="#">Explore Projects</a>
-      <a href="#">Dashboard</a>
-      <a href="#">Profile</a>
+      <a href="index.html">Home</a>
+      <a href="explore.html">Explore Projects</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="profile.html">Profile</a>
     </div>
   </section>
   <script>
-    // If someone has signed up / logged in, show their initials and name instead of Login / Sign Up
-    (function () {
-      var user = null;
-      try { user = JSON.parse(localStorage.getItem('pm_currentUser')); } catch (e) {}
-      if (!user || !user.name) return;
+/* ProjectMatch shared script
+   Used by every page: accounts, saved/interested state, project posts,
+   the navbar (initials + name) and the project details popup.
+   Everything is stored in the browser (localStorage) - there is no server. */
+(function () {
+  'use strict';
 
-      var parts = user.name.trim().split(/\s+/);
-      var initials = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+  var KEYS = {
+    users: 'pm_users',
+    current: 'pm_currentUser',
+    posts: 'pm_posts',
+    state: 'pm_state_',     // + email  -> { saved, interested, activity }
+    profile: 'pm_profile_'  // + email  -> { headline, bio, skills, interests }
+  };
 
-      var box = document.getElementById('auth');
-      box.innerHTML = '<div class="user"><span class="avatar"></span><span class="uname"></span></div>' +
-                      '<button class="logout" id="logout">Log out</button>';
-      box.querySelector('.avatar').textContent = initials;
-      box.querySelector('.uname').textContent = parts[0];
-      document.getElementById('logout').addEventListener('click', function () {
-        localStorage.removeItem('pm_currentUser');
-        location.reload();
+  /* ---------- helpers ---------- */
+  function read(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key));
+      return v === null || v === undefined ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+  function write(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+    catch (e) { return false; }
+  }
+
+  // Tiny DOM builder. Text is always inserted as text, never as HTML.
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    Object.keys(attrs || {}).forEach(function (k) {
+      var v = attrs[k];
+      if (v === false || v === null || v === undefined) return;
+      if (k === 'class') node.className = v;
+      else if (k === 'text') node.textContent = v;
+      else if (k.slice(0, 2) === 'on' && typeof v === 'function') node.addEventListener(k.slice(2), v);
+      else node.setAttribute(k, v === true ? '' : v);
+    });
+    [].concat(children || []).forEach(function (c) {
+      if (c === null || c === undefined || c === false) return;
+      node.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
+    });
+    return node;
+  }
+
+  function currentPage() {
+    return location.pathname.split('/').pop() || 'index.html';
+  }
+
+  function timeAgo(ts) {
+    var s = Math.floor((Date.now() - ts) / 1000);
+    if (s < 60) return 'Just now';
+    var m = Math.floor(s / 60);
+    if (m < 60) return m + (m === 1 ? ' minute ago' : ' minutes ago');
+    var h = Math.floor(m / 60);
+    if (h < 24) return h + (h === 1 ? ' hour ago' : ' hours ago');
+    var d = Math.floor(h / 24);
+    return d === 1 ? 'Yesterday' : d + ' days ago';
+  }
+
+  /* ---------- accounts ---------- */
+  var Auth = {
+    current: function () {
+      var u = read(KEYS.current, null);
+      return u && u.name ? u : null;
+    },
+    initials: function (name) {
+      var p = String(name).trim().split(/\s+/);
+      return ((p[0][0] || '') + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase();
+    },
+    firstName: function (name) { return String(name).trim().split(/\s+/)[0]; },
+    logout: function () { try { localStorage.removeItem(KEYS.current); } catch (e) {} },
+    // Sends the visitor to the login page if nobody is signed in.
+    require: function () {
+      var u = Auth.current();
+      if (!u) location.href = 'login.html?next=' + encodeURIComponent(currentPage());
+      return u;
+    },
+    updateName: function (name) {
+      var u = Auth.current();
+      if (!u) return;
+      var users = read(KEYS.users, []);
+      users.forEach(function (x) { if (x.email === u.email) x.name = name; });
+      write(KEYS.users, users);
+      var posts = read(KEYS.posts, []);
+      posts.forEach(function (x) { if (x.authorEmail === u.email) x.by = name; });
+      write(KEYS.posts, posts);
+      u.name = name;
+      write(KEYS.current, u);
+    }
+  };
+
+  var Profile = {
+    get: function () {
+      var u = Auth.current();
+      var s = u ? read(KEYS.profile + u.email, {}) : {};
+      return { headline: s.headline || '', bio: s.bio || '', skills: s.skills || [], interests: s.interests || [] };
+    },
+    save: function (p) {
+      var u = Auth.current();
+      if (u) write(KEYS.profile + u.email, p);
+    }
+  };
+
+  /* ---------- projects ---------- */
+  var CATEGORIES = ['Accessibility', 'Campus Community', 'Education', 'Web Development'];
+  var STAGES = ['Idea stage', 'In progress', 'Looking for teammates'];
+
+  // Sample projects so the directory is not empty. Replace with your own.
+  var SEED = [
+    {
+      id: 'echospace', title: 'EchoSpace', category: 'Accessibility', stage: 'Looking for teammates',
+      summary: 'A concept for helping students discover more accessible spaces and resources around campus.',
+      desc: 'EchoSpace is designed to make campus navigation transparent and stress-free for all students. It maps physical accessibility routes, quiet sensory study zones, automatic door statuses, and wheelchair-accessible elevator locations in real time. We want to collaborate with student designers and front-end developers to turn preliminary user research into an intuitive prototype.',
+      why: 'Help build a genuine utility for disabled and neurodiverse students on campus while adding an inclusive design case study to your portfolio.',
+      skills: 'UI/UX Design, Frontend', by: 'Maya Chen (Year 3, Design & Ergonomics)'
+    },
+    {
+      id: 'campusconnect', title: 'CampusConnect', category: 'Campus Community', stage: 'Idea stage',
+      summary: 'A student-built concept for bringing campus events, clubs, and student activities into one place.',
+      desc: 'CampusConnect is a student-built concept for bringing campus events, clubs, and student activities into one place. Right now updates are scattered across noticeboards, group chats, and email lists. The goal is a single, searchable feed that helps students find what is happening and get involved.',
+      why: 'Shape a project from the ground up, practise leading a small team, and build a portfolio piece that solves a problem every student recognises.',
+      skills: 'JavaScript, UI/UX', by: 'Priya Nair (Year 2, Computer Science)'
+    },
+    {
+      id: 'studyflow', title: 'StudyFlow', category: 'Education', stage: 'In progress',
+      summary: 'A simple study-planning tool that helps students organize learning resources and track their academic tasks.',
+      desc: 'StudyFlow is a simple study-planning tool that helps students organise learning resources and track their academic tasks. The core planner is under way, and the team is now working on reminders, a weekly view, and a clean way to group notes by module.',
+      why: 'Join a project that is already moving, contribute to real features quickly, and gain hands-on experience with a front-end codebase.',
+      skills: 'HTML, CSS, JavaScript', by: 'Daniel Okafor (Year 2, Information Systems)'
+    },
+    {
+      id: 'portfoliopal', title: 'PortfolioPal', category: 'Web Development', stage: 'In progress',
+      summary: 'A template-based portfolio builder that helps students publish a clean personal site in an afternoon.',
+      desc: 'PortfolioPal gives students a handful of well-designed templates and a guided way to fill them in with projects, skills, and contact details. The first template is working and we are now building the editor and a one-click export.',
+      why: 'Work on something you will actually use yourself, and practise building reusable components and clean CSS.',
+      skills: 'HTML, CSS, UI/UX Design', by: 'Sam Rivera (Year 3, Software Engineering)'
+    },
+    {
+      id: 'greencampus', title: 'GreenCampus', category: 'Campus Community', stage: 'Looking for teammates',
+      summary: 'A simple map of recycling points, refill stations, and bike racks around campus.',
+      desc: 'GreenCampus is a lightweight map that shows where to recycle, refill a water bottle, or lock up a bike. We have collected the locations for two buildings and need help designing the map view and building a simple filter so students can find what they need quickly.',
+      why: 'Turn a small, clear idea into a finished prototype and add a real campus-impact project to your portfolio.',
+      skills: 'JavaScript, UI/UX Design', by: 'Lena Fischer (Year 1, Environmental Science)'
+    },
+    {
+      id: 'codebuddy', title: 'CodeBuddy', category: 'Education', stage: 'Idea stage',
+      summary: 'A matching tool that pairs beginner coders with peer mentors for short weekly pairing sessions.',
+      desc: 'CodeBuddy would let first-year students request a short pairing session on a topic they are stuck on, and let more experienced students offer slots. The idea is still on paper: we are looking for people to help shape the matching rules and sketch the first screens.',
+      why: 'Help shape a product from the very start and practise designing for two different kinds of users.',
+      skills: 'JavaScript, UI/UX', by: 'Omar Haddad (Year 4, Computer Science)'
+    }
+  ];
+
+  var Projects = {
+    categories: CATEGORIES,
+    stages: STAGES,
+    // newest posts first, then the samples
+    all: function () { return read(KEYS.posts, []).slice().reverse().concat(SEED); },
+    get: function (id) {
+      var list = Projects.all();
+      for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+      return null;
+    },
+    isOwn: function (p) {
+      var u = Auth.current();
+      return !!(u && p && p.authorEmail && p.authorEmail === u.email);
+    },
+    add: function (d) {
+      var u = Auth.current();
+      if (!u) return null;
+      var post = {
+        id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        title: d.title, category: d.category, stage: d.stage, summary: d.summary,
+        desc: d.desc, why: d.why || '', skills: d.skills,
+        by: u.name, authorEmail: u.email, createdAt: Date.now()
+      };
+      var posts = read(KEYS.posts, []);
+      posts.push(post);
+      if (!write(KEYS.posts, posts)) return null;
+      var s = State.get();
+      logTo(s, 'posted', post);
+      State.put(s);
+      return post;
+    },
+    remove: function (id) {
+      var p = Projects.get(id);
+      if (!p || !Projects.isOwn(p)) return false;
+      write(KEYS.posts, read(KEYS.posts, []).filter(function (x) { return x.id !== id; }));
+      var s = State.get();
+      s.saved = s.saved.filter(function (x) { return x !== id; });
+      s.interested = s.interested.filter(function (x) { return x !== id; });
+      logTo(s, 'deleted', p);
+      State.put(s);
+      return true;
+    },
+    // Everyone (in this browser) who expressed interest in a project
+    interested: function (id) {
+      var out = [];
+      read(KEYS.users, []).forEach(function (u) {
+        var s = read(KEYS.state + u.email, null);
+        if (s && s.interested && s.interested.indexOf(id) !== -1) out.push({ name: u.name, email: u.email });
       });
-    })();
+      return out;
+    }
+  };
+
+  /* ---------- saved / interested / activity (per account) ---------- */
+  function logTo(s, type, p) {
+    s.activity.unshift({ type: type, id: p.id, title: p.title, at: Date.now() });
+    s.activity = s.activity.slice(0, 20);
+  }
+
+  var State = {
+    get: function () {
+      var u = Auth.current();
+      var s = (u && read(KEYS.state + u.email, null)) || {};
+      return { saved: s.saved || [], interested: s.interested || [], activity: s.activity || [] };
+    },
+    put: function (s) {
+      var u = Auth.current();
+      if (u) write(KEYS.state + u.email, s);
+    },
+    has: function (kind, id) { return State.get()[kind].indexOf(id) !== -1; },
+    // kind: 'saved' | 'interested'. Returns the new on/off value.
+    toggle: function (kind, id) {
+      var p = Projects.get(id);
+      if (!p || Projects.isOwn(p)) return false;
+      var s = State.get();
+      var i = s[kind].indexOf(id);
+      var on = i === -1;
+      if (on) s[kind].push(id); else s[kind].splice(i, 1);
+      logTo(s, kind === 'saved' ? (on ? 'saved' : 'unsaved') : (on ? 'interested' : 'uninterested'), p);
+      State.put(s);
+      return on;
+    }
+  };
+
+  var ACTIVITY_TEXT = {
+    saved: ['Saved ', ' to your dashboard'],
+    unsaved: ['Removed ', ' from your saved projects'],
+    interested: ['Expressed interest in ', ''],
+    uninterested: ['Withdrew your interest in ', ''],
+    posted: ['Posted your idea ', ''],
+    deleted: ['Deleted your idea ', '']
+  };
+
+  function activityNode(a, onOpen) {
+    var parts = ACTIVITY_TEXT[a.type] || ['', ''];
+    var live = a.type !== 'deleted' && Projects.get(a.id);
+    var title = live
+      ? el('a', { href: '#', text: a.title, onclick: function (e) { e.preventDefault(); if (onOpen) onOpen(a.id); } })
+      : el('strong', { text: a.title });
+    return el('li', {}, [parts[0], title, parts[1], el('time', { text: timeAgo(a.at) })]);
+  }
+
+  /* ---------- shared styles (navbar account area, popups, form fields) ---------- */
+  var CSS = [
+    '.pm-auth{display:flex;align-items:center;gap:14px}',
+    '.pm-user{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--ink,#1c2420);text-decoration:none}',
+    '.pm-avatar{width:28px;height:28px;border-radius:50%;background:#e4e8e1;font-size:10px;font-weight:600;display:grid;place-items:center}',
+    '.pm-logout{background:none;border:0;color:var(--muted,#5b625d);font:inherit;font-size:13px;text-decoration:underline;cursor:pointer}',
+    '.pm-login{color:var(--muted,#5b625d);font-size:14px;text-decoration:none}',
+    '.pm-signup{background:var(--green,#6b7f68);color:#fff;border-radius:4px;padding:8px 16px;font-size:14px;font-weight:500;text-decoration:none}',
+
+    'body.pm-modal-open{overflow:hidden}',
+    '.pm-overlay{position:fixed;inset:0;background:rgba(28,36,32,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:100}',
+    '.pm-modal{position:relative;background:var(--card,#fff);color:var(--ink,#1c2420);border-radius:10px;width:100%;max-width:680px;max-height:calc(100vh - 32px);overflow-y:auto;padding:40px 42px 34px;box-shadow:0 20px 50px rgba(0,0,0,.2);font-family:var(--sans,system-ui,sans-serif);font-size:15px;line-height:1.5}',
+    '.pm-modal.narrow{max-width:520px}',
+    '.pm-close{position:absolute;top:30px;right:30px;width:28px;height:28px;border:0;background:none;color:inherit;font-size:24px;line-height:1;cursor:pointer}',
+    '.pm-meta{color:var(--green,#6b7f68);font-size:13px;font-weight:500;margin-bottom:6px;padding-right:40px}',
+    '.pm-modal h2{font-family:var(--serif,Georgia,serif);font-size:28px;font-weight:600;line-height:1.2;margin-bottom:4px;padding-right:40px}',
+    '.pm-by{color:var(--muted,#5b625d);font-size:14px;margin-bottom:24px}',
+    '.pm-by strong{color:#3b423e;font-weight:600}',
+    '.pm-desc{color:var(--muted,#5b625d);font-size:17px;line-height:1.6;margin-bottom:24px}',
+    '.pm-modal h5{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}',
+    '.pm-text{color:var(--muted,#5b625d);margin-bottom:24px}',
+    '.pm-people{list-style:none;margin-bottom:24px;color:var(--muted,#5b625d);font-size:14px}',
+    '.pm-people li{margin-bottom:4px}.pm-people a{color:#25406a}',
+    '.pm-foot{border-top:1px solid var(--border,#e3e3dc);padding-top:22px;margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}',
+    '.pm-note{color:var(--muted,#5b625d);font-size:13px}',
+    '.pm-btn{background:var(--card,#fff);border:1px solid var(--border,#e3e3dc);border-radius:4px;padding:9px 16px;font:inherit;font-size:14px;font-weight:500;color:var(--ink,#1c2420);cursor:pointer}',
+    '.pm-btn:hover{background:var(--bg,#f8f8f4)}',
+    '.pm-interest{border-color:var(--green,#6b7f68);color:var(--green,#6b7f68)}',
+    '.pm-interest.on{background:var(--green,#6b7f68);color:#fff}',
+    '.pm-primary{background:var(--green,#6b7f68);color:#fff;border:1px solid var(--green,#6b7f68);border-radius:6px;padding:10px 18px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}',
+    '.pm-primary:hover{filter:brightness(.94)}',
+    '.pm-btn:focus-visible,.pm-primary:focus-visible,.pm-close:focus-visible{outline:2px solid var(--green,#6b7f68);outline-offset:2px}',
+
+    '.pm-field{margin-bottom:16px}',
+    '.pm-field label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}',
+    '.pm-field input,.pm-field select,.pm-field textarea{width:100%;font:inherit;font-size:14px;color:var(--ink,#1c2420);background:#fff;border:1px solid var(--border,#e3e3dc);border-radius:5px}',
+    '.pm-field input,.pm-field select{height:41px;padding:0 12px}',
+    '.pm-field textarea{padding:10px 12px;min-height:96px;resize:vertical;line-height:1.5}',
+    '.pm-field input:focus,.pm-field select:focus,.pm-field textarea:focus{outline:2px solid rgba(107,127,104,.35);border-color:var(--green,#6b7f68)}',
+    '.pm-field [aria-invalid="true"]{border-color:#b3402f}',
+    '.pm-hint{color:var(--muted,#5b625d);font-size:12px;margin-top:5px}',
+    '.pm-error{color:#b3402f;font-size:12px;margin-top:5px}',
+    '.pm-error:empty{display:none}',
+
+    '@media (max-width:700px){.pm-modal{padding:28px 22px 24px}.pm-close{top:20px;right:16px}}'
+  ].join('\n');
+
+  function injectStyles() {
+    if (document.getElementById('pm-shared-style')) return;
+    var style = document.createElement('style');
+    style.id = 'pm-shared-style';
+    style.textContent = CSS;
+    document.head.appendChild(style);
+  }
+
+  /* ---------- navbar account area ---------- */
+  function renderNav() {
+    var box = document.getElementById('pm-auth');
+    if (!box) return;
+    box.className = 'pm-auth';
+    box.textContent = '';
+    var u = Auth.current();
+    if (u) {
+      var logout = el('button', { class: 'pm-logout', type: 'button', text: 'Log out' });
+      logout.addEventListener('click', function () { Auth.logout(); location.href = 'index.html'; });
+      box.appendChild(el('a', { class: 'pm-user', href: 'profile.html', title: 'Your profile' }, [
+        el('span', { class: 'pm-avatar', text: Auth.initials(u.name) }),
+        el('span', { text: Auth.firstName(u.name) })
+      ]));
+      box.appendChild(logout);
+    } else {
+      box.appendChild(el('a', { class: 'pm-login', href: 'login.html', text: 'Login' }));
+      box.appendChild(el('a', { class: 'pm-signup', href: 'register.html', text: 'Sign Up' }));
+    }
+  }
+
+  /* ---------- popups ---------- */
+  function openModal(content, extraClass) {
+    var previous = document.activeElement;
+    var closeBtn = el('button', { class: 'pm-close', type: 'button', 'aria-label': 'Close', text: '×' });
+    var box = el('div', { class: 'pm-modal' + (extraClass ? ' ' + extraClass : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'pm-modal-title' }, [closeBtn, content]);
+    var overlay = el('div', { class: 'pm-overlay' }, box);
+
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    function close() {
+      document.removeEventListener('keydown', onKey);
+      if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+      document.body.classList.remove('pm-modal-open');
+      if (previous && previous.focus) previous.focus();
+    }
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('mousedown', function (e) { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', onKey);
+
+    document.body.appendChild(overlay);
+    document.body.classList.add('pm-modal-open');
+    closeBtn.focus();
+    return { close: close };
+  }
+
+  // Project details popup with Save and "I'm interested" toggles.
+  // onChange runs after anything changes so the page can refresh itself.
+  function openProject(id, onChange) {
+    var p = Projects.get(id);
+    if (!p) return null;
+    var own = Projects.isOwn(p);
+    var modal;
+
+    var parts = [
+      el('p', { class: 'pm-meta', text: p.category + ' · ' + p.stage }),
+      el('h2', { id: 'pm-modal-title', text: p.title }),
+      el('p', { class: 'pm-by' }, ['Initiated by ', el('strong', { text: p.by + (own ? ' (you)' : '') })]),
+      el('p', { class: 'pm-desc', text: p.desc })
+    ];
+    if (p.why) parts.push(el('h5', { text: 'Why join this project?' }), el('p', { class: 'pm-text', text: p.why }));
+    if (p.skills) parts.push(el('h5', { text: 'Skills needed' }), el('p', { class: 'pm-text', text: p.skills }));
+
+    if (own) {
+      var people = Projects.interested(id);
+      parts.push(el('h5', { text: 'People interested' }));
+      parts.push(people.length
+        ? el('ul', { class: 'pm-people' }, people.map(function (x) {
+            return el('li', {}, [x.name + ' — ', el('a', { href: 'mailto:' + x.email, text: x.email })]);
+          }))
+        : el('p', { class: 'pm-text', text: 'No one has expressed interest yet.' }));
+      parts.push(el('div', { class: 'pm-foot' }, [
+        el('button', {
+          class: 'pm-btn', type: 'button', text: 'Delete idea',
+          onclick: function () {
+            if (!confirm('Delete "' + p.title + '"? This cannot be undone.')) return;
+            Projects.remove(id);
+            modal.close();
+            if (onChange) onChange();
+          }
+        }),
+        el('span', { class: 'pm-note', text: 'You started this project.' })
+      ]));
+    } else {
+      var saveBtn = el('button', { class: 'pm-btn', type: 'button' });
+      var interestBtn = el('button', { class: 'pm-btn pm-interest', type: 'button' });
+      var paint = function () {
+        var saved = State.has('saved', id), interested = State.has('interested', id);
+        saveBtn.textContent = saved ? 'Saved' : 'Save';
+        saveBtn.setAttribute('aria-pressed', String(saved));
+        interestBtn.textContent = interested ? '✓ Interest Expressed' : "I'm interested";
+        interestBtn.classList.toggle('on', interested);
+        interestBtn.setAttribute('aria-pressed', String(interested));
+      };
+      var handler = function (kind) {
+        return function () {
+          if (!Auth.require()) return;
+          State.toggle(kind, id);
+          paint();
+          if (onChange) onChange();
+        };
+      };
+      saveBtn.addEventListener('click', handler('saved'));
+      interestBtn.addEventListener('click', handler('interested'));
+      paint();
+      parts.push(el('div', { class: 'pm-foot' }, [saveBtn, interestBtn]));
+    }
+
+    modal = openModal(el('div', {}, parts));
+    return modal;
+  }
+
+  /* ---------- start ---------- */
+  injectStyles();
+  function start() { renderNav(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+
+  window.PM = {
+    el: el, timeAgo: timeAgo, Auth: Auth, Profile: Profile, Projects: Projects, State: State,
+    renderNav: renderNav, activityNode: activityNode,
+    ui: { openModal: openModal, openProject: openProject }
+  };
+})();
+
   </script>
 </body>
 </html>
