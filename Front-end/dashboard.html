@@ -1,388 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProjectMatch - Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f8f8f4;
-      --card: #ffffff;
-      --ink: #1c2420;
-      --muted: #5b625d;
-      --border: #e3e3dc;
-      --green: #6b7f68;
-      --link: #25406a;
-      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-      --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--sans);
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    a { color: inherit; text-decoration: none; }
-    button { font-family: inherit; cursor: pointer; }
-
-    /* ---------- Navbar ---------- */
-    .navbar { border-bottom: 1px solid var(--border); }
-    .nav {
-      max-width: 1112px;
-      margin: 0 auto;
-      height: 64px;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 19px;
-      font-weight: 600;
-    }
-    .logo::before {
-      content: "P";
-      width: 22px;
-      height: 22px;
-      border-radius: 5px;
-      background: var(--green);
-      color: #fff;
-      font-size: 12px;
-      display: grid;
-      place-items: center;
-    }
-    .navlinks { display: flex; gap: 28px; }
-    .navlinks a { color: var(--muted); padding: 8px 0; }
-    .navlinks a.active {
-      color: var(--ink);
-      font-weight: 500;
-      box-shadow: 0 2px 0 var(--green);
-    }
-    .user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: #ebebe5;
-      font-size: 10px;
-      font-weight: 600;
-      display: grid;
-      place-items: center;
-    }
-
-    /* ---------- Welcome ---------- */
-    .wrap { max-width: 1112px; margin: 0 auto; padding: 0 16px; }
-
-    .welcome { padding-top: 44px; }
-    .label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .welcome .label { margin-bottom: 8px; }
-    .welcome h1 {
-      font-family: var(--serif);
-      font-size: 44px;
-      font-weight: 600;
-      line-height: 1.15;
-      margin-bottom: 14px;
-    }
-    .welcome p { color: var(--muted); font-size: 16px; }
-
-    /* ---------- Stats ---------- */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 32px;
-    }
-    .stat {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 22px 24px;
-    }
-    .stat h3 { font-size: 13px; font-weight: 400; margin-bottom: 4px; }
-    .stat .number {
-      font-family: var(--serif);
-      font-size: 34px;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-    .stat p { color: var(--muted); font-size: 12px; }
-
-    /* ---------- Main columns ---------- */
-    .columns {
-      display: grid;
-      grid-template-columns: 1.65fr 1fr;
-      gap: 30px;
-      margin-top: 48px;
-      align-items: start;
-    }
-    .col-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 18px;
-    }
-    .col-head h2 { font-size: 17px; font-weight: 600; }
-    .col-head a { color: #7a7b52; font-size: 13px; font-weight: 500; }
-    .col-head a:hover { text-decoration: underline; }
-
-    /* saved projects */
-    .saved-list { display: flex; flex-direction: column; gap: 12px; }
-    .saved-item {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 18px 16px 18px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .saved-item h3 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
-    .saved-item p { color: var(--muted); font-size: 12px; }
-    .saved-actions { display: flex; gap: 10px; }
-    .btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      height: 28px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--ink);
-    }
-    .btn:hover { background: var(--bg); }
-    .btn.view { padding: 0 14px; }
-    .btn.remove { width: 26px; color: var(--muted); font-size: 14px; line-height: 1; }
-    .btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-    .empty {
-      background: var(--card);
-      border: 1px dashed var(--border);
-      border-radius: 6px;
-      padding: 28px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .empty a { color: var(--link); font-weight: 500; }
-
-    /* activity */
-    .activity-box {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 18px 20px 14px;
-    }
-    .timeline { list-style: none; }
-    .timeline li {
-      position: relative;
-      padding: 0 0 18px 22px;
-      font-size: 13px;
-    }
-    .timeline li:last-child { padding-bottom: 4px; }
-    .timeline li::before {           /* dot */
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 6px;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-    }
-    .timeline li:not(:last-child)::after {   /* connecting line */
-      content: "";
-      position: absolute;
-      left: 3px;
-      top: 15px;
-      bottom: 0;
-      width: 1px;
-      background: var(--border);
-    }
-    .timeline a { color: var(--link); }
-    .timeline time { display: block; color: var(--muted); font-size: 11px; }
-
-    /* ---------- Footer ---------- */
-    .footer {
-      margin-top: 56px;
-      border-top: 1px solid var(--border);
-      padding: 40px max(16px, calc((100% - 1112px) / 2)) 48px;
-      display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: 48px;
-    }
-    .footer-left h2 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 12px; }
-    .footer-left p { color: var(--muted); font-size: 13px; max-width: 400px; margin-bottom: 14px; }
-    .footer-left p:last-child { font-size: 12px; }
-    .footer-right h3 {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 14px;
-    }
-    .footer-right a { display: block; color: var(--muted); font-size: 13px; margin-bottom: 10px; }
-    .footer-right a:hover { color: var(--ink); }
-
-    /* ---------- Responsive ---------- */
-    @media (max-width: 900px) {
-      .navlinks { display: none; }
-      .stats { grid-template-columns: 1fr; }
-      .columns { grid-template-columns: 1fr; }
-      .welcome h1 { font-size: 34px; }
-      .footer { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProjectMatch - Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8f8f4;--card:#fff;--ink:#1c2420;--muted:#5b625d;--border:#e3e3dc;--green:#6b7f68;--link:#25406a;--serif:"Source Serif 4",Georgia,"Times New Roman",serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+.navbar{border-bottom:1px solid var(--border)}
+.nav{max-width:1112px;margin:0 auto;height:64px;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600}
+.logo::before{content:"P";width:22px;height:22px;border-radius:5px;background:var(--green);color:#fff;font-size:12px;display:grid;place-items:center}
+.navlinks{display:flex;gap:28px}.navlinks a{color:var(--muted);padding:8px 0}
+.navlinks a.active{color:var(--ink);font-weight:500;box-shadow:0 2px 0 var(--green)}
+.right-nav{display:flex;align-items:center;gap:14px}
+.user{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500}
+.avatar{width:26px;height:26px;border-radius:50%;background:#ebebe5;font-size:10px;font-weight:600;display:grid;place-items:center}
+.logout{background:none;border:0;color:var(--muted);font-size:13px;text-decoration:underline}
+.wrap{max-width:1112px;margin:0 auto;padding:0 16px}
+.welcome{padding-top:44px}
+.label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.welcome .label{margin-bottom:8px}
+.welcome h1{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1.15;margin-bottom:14px}
+.welcome p{color:var(--muted);font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:22px 24px}
+.stat h3{font-size:13px;font-weight:400;margin-bottom:4px}
+.stat .number{font-family:var(--serif);font-size:34px;font-weight:600;line-height:1.2}
+.stat p{color:var(--muted);font-size:12px}
+.columns{display:grid;grid-template-columns:1.65fr 1fr;gap:30px;margin-top:48px;align-items:start}
+.col-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px}
+.col-head h2{font-size:17px;font-weight:600}
+.col-head a{color:#7a7b52;font-size:13px;font-weight:500}.col-head a:hover{text-decoration:underline}
+.saved-list{display:flex;flex-direction:column;gap:12px}
+.saved-item{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.saved-item h3{font-size:14px;font-weight:600;margin-bottom:2px}.saved-item p{color:var(--muted);font-size:12px}
+.saved-actions{display:flex;gap:10px}
+.btn{background:var(--card);border:1px solid var(--border);border-radius:4px;height:28px;font-size:12px;font-weight:500;color:var(--ink)}
+.btn:hover{background:var(--bg)}.btn.view{padding:0 14px}.btn.remove{width:26px;color:var(--muted);font-size:14px;line-height:1}
+.btn:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.empty{background:var(--card);border:1px dashed var(--border);border-radius:6px;padding:28px;text-align:center;color:var(--muted);font-size:14px}
+.empty a{color:var(--link);font-weight:500}
+.activity-box{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:18px 20px 14px}
+.timeline{list-style:none}
+.timeline li{position:relative;padding:0 0 18px 22px;font-size:13px}.timeline li:last-child{padding-bottom:4px}
+.timeline li::before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;border-radius:50%;background:var(--green)}
+.timeline li:not(:last-child)::after{content:"";position:absolute;left:3px;top:15px;bottom:0;width:1px;background:var(--border)}
+.timeline a{color:var(--link)}.timeline time{display:block;color:var(--muted);font-size:11px}
+.footer{margin-top:56px;border-top:1px solid var(--border);padding:40px max(16px,calc((100% - 1112px)/2)) 48px;display:grid;grid-template-columns:1.6fr 1fr;gap:48px}
+.footer-left h2{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:12px}
+.footer-left p{color:var(--muted);font-size:13px;max-width:400px;margin-bottom:14px}.footer-left p:last-child{font-size:12px}
+.footer-right h3{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.footer-right a{display:block;color:var(--muted);font-size:13px;margin-bottom:10px}.footer-right a:hover{color:var(--ink)}
+@media(max-width:900px){.navlinks{display:none}.stats,.columns,.footer{grid-template-columns:1fr}.welcome h1{font-size:34px}}
+</style>
 </head>
 <body>
+<section class="navbar"><div class="nav">
+  <div class="logo">ProjectMatch</div>
+  <div class="navlinks">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore Projects</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+    <a href="profile.html">Profile</a>
+  </div>
+  <div class="right-nav">
+    <div class="user"><span class="avatar" id="u-avatar"></span><span id="u-name"></span></div>
+    <button class="logout" id="logout" type="button">Log out</button>
+  </div>
+</div></section>
 
-  <section class="navbar">
-    <div class="nav">
-      <div class="logo">ProjectMatch</div>
-      <div class="navlinks">
-        <a href="index.html">Home</a>
-        <a href="explore.html">Explore Projects</a>
-        <a href="dashboard.html" class="active">Dashboard</a>
-        <a href="profile.html">Profile</a>
+<main class="wrap">
+  <section class="welcome">
+    <p class="label">Your workspace</p>
+    <h1>Welcome back, <span id="u-welcome"></span>.</h1>
+    <p>Here is what's happening with your projects.</p>
+  </section>
+  <section class="stats">
+    <div class="stat"><h3>Saved Projects</h3><div class="number" id="saved-count">2</div><p>Bookmarked for quick reference</p></div>
+    <div class="stat"><h3>Projects You're Interested In</h3><div class="number">1</div><p>Expressed willingness to help</p></div>
+    <div class="stat"><h3>Projects You Have Started</h3><div class="number">1</div><p>Initiatives you lead or drafted</p></div>
+  </section>
+  <section class="columns">
+    <div class="saved">
+      <div class="col-head"><h2>Saved Projects</h2><a href="explore.html">Browse more →</a></div>
+      <div class="saved-list" id="saved-list">
+        <div class="saved-item">
+          <div><h3>EchoSpace</h3><p>Accessibility · Looking for teammates</p></div>
+          <div class="saved-actions"><button class="btn view">View</button><button class="btn remove" aria-label="Remove EchoSpace from saved">×</button></div>
+        </div>
+        <div class="saved-item">
+          <div><h3>StudyFlow</h3><p>Education · In progress</p></div>
+          <div class="saved-actions"><button class="btn view">View</button><button class="btn remove" aria-label="Remove StudyFlow from saved">×</button></div>
+        </div>
       </div>
-      <div class="user"><span class="avatar">AM</span>Alex</div>
+    </div>
+    <div class="activity">
+      <div class="col-head"><h2>Your Activity</h2></div>
+      <div class="activity-box"><ul class="timeline" id="timeline">
+        <li>Saved <a href="#">EchoSpace</a> to your dashboard<time>Just now</time></li>
+        <li>Expressed interest in <a href="#">EchoSpace</a><time>2 hours ago</time></li>
+        <li>Saved <a href="#">StudyFlow</a> to your dashboard<time>Yesterday</time></li>
+        <li>Started your collaboration draft for <a href="#">CampusConnect</a><time>3 days ago</time></li>
+      </ul></div>
     </div>
   </section>
+</main>
 
-  <main class="wrap">
-    <section class="welcome">
-      <p class="label">Your workspace</p>
-      <h1>Welcome back, Alex.</h1>
-      <p>Here is what's happening with your projects.</p>
-    </section>
+<section class="footer">
+  <div class="footer-left">
+    <h2>ProjectMatch</h2>
+    <p>A platform for university students to share project ideas, test campus interest, and find collaborators to build portfolio-ready prototypes together.</p>
+    <p>Built by students, for students — Northbridge University.</p>
+  </div>
+  <div class="footer-right">
+    <h3>Platform Links</h3>
+    <a href="index.html">Home</a><a href="explore.html">Explore Projects</a><a href="dashboard.html">Dashboard</a><a href="profile.html">Profile</a>
+  </div>
+</section>
 
-    <section class="stats">
-      <div class="stat">
-        <h3>Saved Projects</h3>
-        <div class="number" id="saved-count">2</div>
-        <p>Bookmarked for quick reference</p>
-      </div>
-      <div class="stat">
-        <h3>Projects You're Interested In</h3>
-        <div class="number">1</div>
-        <p>Expressed willingness to help</p>
-      </div>
-      <div class="stat">
-        <h3>Projects You Have Started</h3>
-        <div class="number">1</div>
-        <p>Initiatives you lead or drafted</p>
-      </div>
-    </section>
+<script>
+// Show the logged-in user's name; send visitors who are not logged in to the login page
+var user = null;
+try { user = JSON.parse(localStorage.getItem('pm_currentUser')); } catch (e) {}
+if (!user || !user.name) {
+  location.href = 'login.html';
+} else {
+  var parts = user.name.trim().split(/\s+/);
+  var initials = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+  document.getElementById('u-avatar').textContent = initials;
+  document.getElementById('u-name').textContent = parts[0];
+  document.getElementById('u-welcome').textContent = parts[0];
+  document.getElementById('logout').addEventListener('click', function () {
+    localStorage.removeItem('pm_currentUser');
+    localStorage.removeItem('pm_token');
+    location.href = 'index.html';
+  });
+}
 
-    <section class="columns">
-      <div class="saved">
-        <div class="col-head">
-          <h2>Saved Projects</h2>
-          <a href="#">Browse more →</a>
-        </div>
-        <div class="saved-list" id="saved-list">
-          <div class="saved-item">
-            <div>
-              <h3>EchoSpace</h3>
-              <p>Accessibility · Looking for teammates</p>
-            </div>
-            <div class="saved-actions">
-              <button class="btn view">View</button>
-              <button class="btn remove" aria-label="Remove EchoSpace from saved">×</button>
-            </div>
-          </div>
-          <div class="saved-item">
-            <div>
-              <h3>StudyFlow</h3>
-              <p>Education · In progress</p>
-            </div>
-            <div class="saved-actions">
-              <button class="btn view">View</button>
-              <button class="btn remove" aria-label="Remove StudyFlow from saved">×</button>
-            </div>
-          </div>
-        </div>
-      </div>
+const list = document.getElementById('saved-list');
+const count = document.getElementById('saved-count');
+const timeline = document.getElementById('timeline');
 
-      <div class="activity">
-        <div class="col-head">
-          <h2>Your Activity</h2>
-        </div>
-        <div class="activity-box">
-          <ul class="timeline" id="timeline">
-            <li>Saved <a href="#">EchoSpace</a> to your dashboard<time>Just now</time></li>
-            <li>Expressed interest in <a href="#">EchoSpace</a><time>2 hours ago</time></li>
-            <li>Saved <a href="#">StudyFlow</a> to your dashboard<time>Yesterday</time></li>
-            <li>Started your collaboration draft for <a href="#">CampusConnect</a><time>3 days ago</time></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  </main>
+function updateCount() {
+  const n = list.querySelectorAll('.saved-item').length;
+  count.textContent = n;
+  if (n === 0 && !list.querySelector('.empty')) {
+    list.innerHTML = '<div class="empty">No saved projects yet. <a href="explore.html">Browse projects</a> to bookmark some.</div>';
+  }
+}
 
-  <section class="footer">
-    <div class="footer-left">
-      <h2>ProjectMatch</h2>
-      <p>A platform for university students to share project ideas, test campus interest, and find collaborators to build portfolio-ready prototypes together.</p>
-      <p>Built by students, for students — Northbridge University.</p>
-    </div>
-    <div class="footer-right">
-      <h3>Platform Links</h3>
-      <a href="#">Home</a>
-      <a href="#">Explore Projects</a>
-      <a href="#">Dashboard</a>
-      <a href="#">Profile</a>
-    </div>
-  </section>
-
-  <script>
-    const list = document.getElementById('saved-list');
-    const count = document.getElementById('saved-count');
-    const timeline = document.getElementById('timeline');
-
-    function updateCount() {
-      const n = list.querySelectorAll('.saved-item').length;
-      count.textContent = n;
-      if (n === 0 && !list.querySelector('.empty')) {
-        list.innerHTML = '<div class="empty">No saved projects yet. <a href="#">Browse projects</a> to bookmark some.</div>';
-      }
-    }
-
-    list.addEventListener('click', function (e) {
-      const btn = e.target.closest('.remove');
-      if (!btn) return;
-      const item = btn.closest('.saved-item');
-      const name = item.querySelector('h3').textContent;
-      item.remove();
-      updateCount();
-
-      // add an entry at the top of the activity timeline
-      const li = document.createElement('li');
-      li.innerHTML = 'Removed <a href="#">' + name + '</a> from your dashboard<time>Just now</time>';
-      timeline.prepend(li);
-    });
-  </script>
+list.addEventListener('click', function (e) {
+  const btn = e.target.closest('.remove');
+  if (!btn) return;
+  const item = btn.closest('.saved-item');
+  const name = item.querySelector('h3').textContent;
+  item.remove();
+  updateCount();
+  const li = document.createElement('li');
+  li.innerHTML = 'Removed <a href="#">' + name + '</a> from your dashboard<time>Just now</time>';
+  timeline.prepend(li);
+});
+</script>
 </body>
 </html>
