@@ -1,536 +1,345 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProjectMatch - Profile</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f8f8f4;
-      --card: #ffffff;
-      --ink: #1c2420;
-      --muted: #5b625d;
-      --border: #e3e3dc;
-      --green: #6b7f68;
-      --tint: #f4f4ee;
-      --chip: #eeeee7;
-      --link: #3d6a9a;
-      --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
-      --sans: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--sans);
-      font-size: 15px;
-      line-height: 1.5;
-    }
-    body.modal-open { overflow: hidden; }
-
-    a { color: inherit; text-decoration: none; }
-    button { font-family: inherit; cursor: pointer; }
-    button:focus-visible, a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-
-    .label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    /* ---------- Navbar ---------- */
-    .navbar { border-bottom: 1px solid var(--border); }
-    .nav {
-      max-width: 1112px;
-      margin: 0 auto;
-      height: 64px;
-      padding: 0 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; }
-    .logo::before {
-      content: "P";
-      width: 22px; height: 22px;
-      border-radius: 5px;
-      background: var(--green);
-      color: #fff;
-      font-size: 12px;
-      display: grid;
-      place-items: center;
-    }
-    .navlinks { display: flex; gap: 28px; }
-    .navlinks a { color: var(--muted); padding: 8px 0; }
-    .navlinks a.active { color: var(--ink); font-weight: 500; box-shadow: 0 2px 0 var(--green); }
-    .user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: #f1f1ec;
-    }
-    .avatar-sm {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      background: #e4e8e1;
-      font-size: 9px;
-      font-weight: 600;
-      display: grid;
-      place-items: center;
-    }
-
-    /* ---------- Page ---------- */
-    .wrap { max-width: 1112px; margin: 0 auto; padding: 0 16px; }
-
-    .page-title {
-      font-family: var(--serif);
-      font-size: 40px;
-      font-weight: 600;
-      line-height: 1.2;
-      padding-top: 24px;
-      margin-bottom: 36px;
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    /* profile header */
-    .profile-card {
-      padding: 26px 28px 28px;
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      column-gap: 24px;
-      align-items: center;
-    }
-    .avatar {
-      width: 66px; height: 66px;
-      border-radius: 50%;
-      background: #e4e8e1;
-      font-size: 18px;
-      font-weight: 500;
-      display: grid;
-      place-items: center;
-    }
-    .profile-card h2 { font-family: var(--serif); font-size: 24px; font-weight: 600; line-height: 1.2; }
-    .profile-card .role { color: var(--link); font-size: 13px; margin-top: 6px; }
-    .btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--ink);
-    }
-    .btn:hover { background: var(--bg); }
-    .edit { align-self: start; display: inline-flex; align-items: center; gap: 8px; }
-    .edit svg { width: 12px; height: 12px; }
-    .profile-card hr {
-      grid-column: 2;
-      border: 0;
-      border-top: 1px solid var(--border);
-      margin: 16px 0 0;
-      max-width: 460px;
-    }
-    .bio {
-      grid-column: 1 / -1;
-      margin-top: 16px;
-      max-width: 530px;
-      font-size: 14px;
-    }
-    .profile-card > .avatar { grid-row: 1 / span 2; align-self: start; }
-    .profile-card .who { grid-column: 2; }
-    .profile-card .edit { grid-column: 3; grid-row: 1; }
-
-    /* two columns */
-    .columns {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 30px;
-      margin-bottom: 48px;
-      align-items: stretch;
-    }
-    .panel { padding: 30px 20px 28px; min-height: 263px; }
-    .panel h3 { font-size: 15px; font-weight: 600; margin-bottom: 22px; }
-    .panel .label { margin-bottom: 8px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
-    .tag {
-      background: var(--chip);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 5px 9px;
-      font-size: 11px;
-      color: #24405f;
-    }
-
-    /* involvement */
-    .involve-list { display: flex; flex-direction: column; gap: 10px; }
-    .involve-item {
-      background: var(--tint);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 12px 12px 12px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .involve-item h4 { font-size: 13px; font-weight: 600; }
-    .involve-item p { font-size: 11px; color: var(--muted); }
-    .involve-item .btn { font-size: 12px; padding: 7px 14px; }
-
-    /* ---------- Footer ---------- */
-    .footer {
-      margin-top: 0;
-      border-top: 1px solid var(--border);
-      padding: 40px max(16px, calc((100% - 1112px) / 2)) 48px;
-      display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: 48px;
-    }
-    .footer-left h2 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 12px; }
-    .footer-left p { color: var(--muted); font-size: 13px; max-width: 400px; margin-bottom: 14px; }
-    .footer-left p:last-child { font-size: 12px; }
-    .footer-right h3 { margin-bottom: 14px; }
-    .footer-right a { display: block; color: var(--muted); font-size: 13px; margin-bottom: 10px; }
-    .footer-right a:hover { color: var(--ink); }
-
-    /* ---------- Modal ---------- */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(28, 36, 32, 0.45);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 50;
-    }
-    .overlay.open { display: flex; }
-    .modal {
-      position: relative;
-      background: var(--card);
-      border-radius: 10px;
-      width: 100%;
-      max-width: 680px;
-      max-height: calc(100vh - 32px);
-      overflow-y: auto;
-      padding: 40px 42px 34px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-    }
-    .modal-close {
-      position: absolute;
-      top: 34px;
-      right: 36px;
-      width: 28px; height: 28px;
-      border: 0;
-      background: none;
-      color: var(--ink);
-      font-size: 24px;
-      line-height: 1;
-    }
-    .modal-meta { color: var(--green); font-size: 13px; font-weight: 500; margin-bottom: 6px; padding-right: 40px; }
-    .modal h2 { font-family: var(--serif); font-size: 28px; font-weight: 600; line-height: 1.2; margin-bottom: 4px; }
-    .modal-by { color: var(--muted); font-size: 14px; margin-bottom: 26px; }
-    .modal-by strong { color: #3b423e; font-weight: 600; }
-    .modal-desc { color: var(--muted); font-size: 17px; line-height: 1.6; margin-bottom: 26px; }
-    .modal h5 {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .modal-text { color: var(--muted); font-size: 15px; margin-bottom: 26px; }
-    .modal-foot {
-      border-top: 1px solid var(--border);
-      padding-top: 24px;
-      margin-top: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
-    .save-btn { padding: 9px 16px; font-size: 14px; }
-    .interest-btn {
-      background: var(--card);
-      border: 1px solid var(--green);
-      color: var(--green);
-      border-radius: 4px;
-      padding: 9px 16px;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .interest-btn.on { background: var(--green); color: #fff; }
-    .interest-btn[hidden] { display: none; }
-    .own-note { color: var(--muted); font-size: 13px; }
-
-    /* ---------- Responsive ---------- */
-    @media (max-width: 900px) {
-      .navlinks { display: none; }
-      .columns { grid-template-columns: 1fr; }
-      .footer { grid-template-columns: 1fr; }
-      .page-title { font-size: 32px; }
-      .profile-card { grid-template-columns: auto 1fr; }
-      .profile-card .edit { grid-column: 1 / -1; grid-row: auto; margin-top: 16px; justify-self: start; }
-      .profile-card hr { grid-column: 1 / -1; }
-      .modal { padding: 28px 22px 24px; }
-      .modal-close { top: 22px; right: 18px; }
-      .modal-foot { flex-wrap: wrap; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProjectMatch - Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f8f8f4;--card:#fff;--ink:#1c2420;--muted:#5b625d;--border:#e3e3dc;--green:#6b7f68;--tint:#f4f4ee;--chip:#eeeee7;--link:#3d6a9a;--serif:"Source Serif 4",Georgia,"Times New Roman",serif;--sans:"Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+body.modal-open{overflow:hidden}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.label{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.navbar{border-bottom:1px solid var(--border)}
+.nav{max-width:1112px;margin:0 auto;height:64px;padding:0 16px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:600}
+.logo::before{content:"P";width:22px;height:22px;border-radius:5px;background:var(--green);color:#fff;font-size:12px;display:grid;place-items:center}
+.navlinks{display:flex;gap:28px}.navlinks a{color:var(--muted);padding:8px 0}
+.navlinks a.active{color:var(--ink);font-weight:500;box-shadow:0 2px 0 var(--green)}
+.right-nav{display:flex;align-items:center;gap:14px}
+.user{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:#f1f1ec}
+.avatar-sm{width:22px;height:22px;border-radius:50%;background:#e4e8e1;font-size:9px;font-weight:600;display:grid;place-items:center}
+.logout{background:none;border:0;color:var(--muted);font-size:13px;text-decoration:underline}
+.wrap{max-width:1112px;margin:0 auto;padding:0 16px}
+.page-title{font-family:var(--serif);font-size:40px;font-weight:600;line-height:1.2;padding-top:24px;margin-bottom:36px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px}
+.profile-card{padding:26px 28px 28px;display:grid;grid-template-columns:auto 1fr auto;column-gap:24px;align-items:center}
+.avatar{width:66px;height:66px;border-radius:50%;background:#e4e8e1;font-size:18px;font-weight:500;display:grid;place-items:center;grid-row:1/span 2;align-self:start}
+.profile-card h2{font-family:var(--serif);font-size:24px;font-weight:600;line-height:1.2}
+.profile-card .who{grid-column:2}
+.profile-card .role{color:var(--link);font-size:13px;margin-top:6px}
+.btn{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:8px 14px;font-size:13px;font-weight:500;color:var(--ink)}
+.btn:hover{background:var(--bg)}
+.btn-primary{background:var(--green);border-color:var(--green);color:#fff}.btn-primary:hover{background:#5f735c}
+.edit{align-self:start;display:inline-flex;align-items:center;gap:8px;grid-column:3;grid-row:1}.edit svg{width:12px;height:12px}
+.profile-card hr{grid-column:2;border:0;border-top:1px solid var(--border);margin:16px 0 0;max-width:460px}
+.bio{grid-column:1/-1;margin-top:16px;max-width:530px;font-size:14px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:30px;margin-bottom:48px;align-items:stretch}
+.panel{padding:30px 20px 28px;min-height:263px}
+.panel h3{font-size:15px;font-weight:600;margin-bottom:22px}.panel .label{margin-bottom:8px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.tag{background:var(--chip);border:1px solid var(--border);border-radius:3px;padding:5px 9px;font-size:11px;color:#24405f}
+.empty-note{color:var(--muted);font-size:12px}
+.involve-list{display:flex;flex-direction:column;gap:10px}
+.involve-item{background:var(--tint);border:1px solid var(--border);border-radius:4px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.involve-item h4{font-size:13px;font-weight:600}.involve-item p{font-size:11px;color:var(--muted)}
+.involve-item .btn{font-size:12px;padding:7px 14px}
+.footer{border-top:1px solid var(--border);padding:40px max(16px,calc((100% - 1112px)/2)) 48px;display:grid;grid-template-columns:1.6fr 1fr;gap:48px}
+.footer-left h2{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:12px}
+.footer-left p{color:var(--muted);font-size:13px;max-width:400px;margin-bottom:14px}.footer-left p:last-child{font-size:12px}
+.footer-right h3{margin-bottom:14px}
+.footer-right a{display:block;color:var(--muted);font-size:13px;margin-bottom:10px}.footer-right a:hover{color:var(--ink)}
+.overlay{position:fixed;inset:0;background:rgba(28,36,32,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.overlay.open{display:flex}
+.modal{position:relative;background:var(--card);border-radius:10px;width:100%;max-width:680px;max-height:calc(100vh - 32px);overflow-y:auto;padding:40px 42px 34px;box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.modal-close{position:absolute;top:34px;right:36px;width:28px;height:28px;border:0;background:none;color:var(--ink);font-size:24px;line-height:1}
+.modal-meta{color:var(--green);font-size:13px;font-weight:500;margin-bottom:6px;padding-right:40px}
+.modal h2{font-family:var(--serif);font-size:28px;font-weight:600;line-height:1.2;margin-bottom:4px}
+.modal-by{color:var(--muted);font-size:14px;margin-bottom:26px}.modal-by strong{color:#3b423e;font-weight:600}
+.modal-desc{color:var(--muted);font-size:17px;line-height:1.6;margin-bottom:26px}
+.modal h5{font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.modal-text{color:var(--muted);font-size:15px;margin-bottom:26px}
+.modal-foot{border-top:1px solid var(--border);padding-top:24px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.save-btn{padding:9px 16px;font-size:14px}
+.interest-btn{background:var(--card);border:1px solid var(--green);color:var(--green);border-radius:4px;padding:9px 16px;font-size:14px;font-weight:500}
+.interest-btn.on{background:var(--green);color:#fff}.interest-btn[hidden]{display:none}
+.own-note{color:var(--muted);font-size:13px}
+.f-field{margin-bottom:16px}
+.f-field label{display:block;font-size:14px;font-weight:500;margin-bottom:6px}
+.f-field input,.f-field textarea{width:100%;font:inherit;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--border);border-radius:5px}
+.f-field input{height:41px;padding:0 12px}
+.f-field textarea{min-height:96px;padding:10px 12px;resize:vertical;line-height:1.5}
+.f-field input:focus,.f-field textarea:focus{outline:2px solid rgba(107,127,104,.35);border-color:var(--green)}
+.f-hint{color:var(--muted);font-size:12px;margin-top:5px}
+@media(max-width:900px){.navlinks{display:none}.columns,.footer{grid-template-columns:1fr}.page-title{font-size:32px}
+.profile-card{grid-template-columns:auto 1fr}.edit{grid-column:1/-1;grid-row:auto;margin-top:16px;justify-self:start}.profile-card hr{grid-column:1/-1}
+.modal{padding:28px 22px 24px}.modal-close{top:22px;right:18px}.modal-foot{flex-wrap:wrap}}
+</style>
 </head>
 <body>
+<section class="navbar"><div class="nav">
+  <div class="logo">ProjectMatch</div>
+  <div class="navlinks">
+    <a href="index.html">Home</a>
+    <a href="explore.html">Explore Projects</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="profile.html" class="active">Profile</a>
+  </div>
+  <div class="right-nav">
+    <div class="user"><span class="avatar-sm" id="u-avatar"></span><span id="u-name"></span></div>
+    <button class="logout" id="logout" type="button">Log out</button>
+  </div>
+</div></section>
 
-  <section class="navbar">
-    <div class="nav">
-      <div class="logo">ProjectMatch</div>
-      <div class="navlinks">
-        <a href="index.html">Home</a>
-        <a href="explore.html">Explore Projects</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="profile.html" class="active">Profile</a>
-      </div>
-      <div class="user"><span class="avatar-sm">AM</span>Alex</div>
-    </div>
+<main class="wrap">
+  <h1 class="page-title">Profile &amp; Involvement</h1>
+
+  <section class="card profile-card">
+    <div class="avatar" id="u-avatar-big"></div>
+    <div class="who"><h2 id="u-full"></h2><p class="role" id="u-role"></p></div>
+    <button class="btn edit" id="edit-btn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+      Edit Profile
+    </button>
+    <hr>
+    <p class="bio" id="u-bio"></p>
   </section>
 
-  <main class="wrap">
-    <h1 class="page-title">Profile &amp; Involvement</h1>
-
-    <section class="card profile-card">
-      <div class="avatar">AM</div>
-      <div class="who">
-        <h2>Alex Morgan</h2>
-        <p class="role">Computer Science Student · Northbridge University</p>
-      </div>
-      <button class="btn edit">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-        Edit Profile
-      </button>
-      <hr>
-      <p class="bio">I enjoy building useful digital products, exploring frontend development, and working with people who have interesting ideas.</p>
-    </section>
-
-    <section class="columns">
-      <div class="card panel">
-        <h3>Skills &amp; Interests</h3>
-        <p class="label">Skills</p>
-        <div class="tags">
-          <span class="tag">HTML</span>
-          <span class="tag">CSS</span>
-          <span class="tag">JavaScript</span>
-          <span class="tag">UI/UX Design</span>
-          <span class="tag">Figma</span>
-          <span class="tag">Problem Solving</span>
-        </div>
-        <p class="label">Interests</p>
-        <div class="tags">
-          <span class="tag">Web Development</span>
-          <span class="tag">Accessibility</span>
-          <span class="tag">Education Technology</span>
-        </div>
-      </div>
-
-      <div class="card panel">
-        <h3>Project Involvement</h3>
-        <div class="involve-list" id="involve-list"></div>
-      </div>
-    </section>
-  </main>
-
-  <section class="footer">
-    <div class="footer-left">
-      <h2>ProjectMatch</h2>
-      <p>A platform for university students to share project ideas, test campus interest, and find collaborators to build portfolio-ready prototypes together.</p>
-      <p>Built by students, for students — Northbridge University.</p>
+  <section class="columns">
+    <div class="card panel">
+      <h3>Skills &amp; Interests</h3>
+      <p class="label">Skills</p>
+      <div class="tags" id="skills-box"></div>
+      <p class="label">Interests</p>
+      <div class="tags" id="interests-box"></div>
     </div>
-    <div class="footer-right">
-      <h3 class="label">Platform Links</h3>
-      <a href="#">Home</a>
-      <a href="#">Explore Projects</a>
-      <a href="#">Dashboard</a>
-      <a href="#">Profile</a>
+    <div class="card panel">
+      <h3>Project Involvement</h3>
+      <div class="involve-list" id="involve-list"></div>
     </div>
   </section>
+</main>
 
-  <!-- Project details modal -->
-  <div class="overlay" id="overlay" aria-hidden="true">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
-      <button class="modal-close" id="m-close" aria-label="Close">×</button>
-      <p class="modal-meta" id="m-meta"></p>
-      <h2 id="m-title"></h2>
-      <p class="modal-by">Initiated by <strong id="m-by"></strong></p>
-      <p class="modal-desc" id="m-desc"></p>
-      <h5>Why join this project?</h5>
-      <p class="modal-text" id="m-why"></p>
-      <h5>Skills needed</h5>
-      <p class="modal-text" id="m-skills"></p>
-      <div class="modal-foot">
-        <button class="btn save-btn" id="m-save"></button>
-        <button class="interest-btn" id="m-interest"></button>
-        <span class="own-note" id="m-own" hidden>You started this project.</span>
-      </div>
+<section class="footer">
+  <div class="footer-left">
+    <h2>ProjectMatch</h2>
+    <p>A platform for university students to share project ideas, test campus interest, and find collaborators to build portfolio-ready prototypes together.</p>
+    <p>Built by students, for students — Northbridge University.</p>
+  </div>
+  <div class="footer-right">
+    <h3 class="label">Platform Links</h3>
+    <a href="index.html">Home</a><a href="explore.html">Explore Projects</a><a href="dashboard.html">Dashboard</a><a href="profile.html">Profile</a>
+  </div>
+</section>
+
+<!-- Edit profile modal -->
+<div class="overlay" id="edit-overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="e-title">
+    <button class="modal-close" id="e-close" type="button" aria-label="Close">×</button>
+    <h2 id="e-title">Edit Profile</h2>
+    <p class="modal-by">Your name and email come from your account.</p>
+    <div class="f-field"><label for="e-bio">Bio</label><textarea id="e-bio" maxlength="300" placeholder="Tell other students about yourself"></textarea></div>
+    <div class="f-field"><label for="e-skills">Skills</label><input type="text" id="e-skills" placeholder="HTML, CSS, JavaScript"><p class="f-hint">Separate skills with commas.</p></div>
+    <div class="f-field"><label for="e-interests">Interests</label><input type="text" id="e-interests" placeholder="Web Development, Accessibility"><p class="f-hint">Separate interests with commas.</p></div>
+    <div class="modal-foot">
+      <button class="btn" id="e-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" id="e-save" type="button">Save changes</button>
     </div>
   </div>
+</div>
 
-  <script>
-    // ----- Project data & state -----
-    const projects = [
-      {
-        id: 'echospace',
-        title: 'EchoSpace',
-        category: 'Accessibility',
-        stage: 'Looking for teammates',
-        by: 'Maya Chen (Year 3, Design & Ergonomics)',
-        desc: 'EchoSpace is designed to make campus navigation transparent and stress-free for all students. It maps physical accessibility routes, quiet sensory study zones, automatic door statuses, and wheelchair-accessible elevator locations in real time. We want to collaborate with student designers and front-end developers to turn preliminary user research into an intuitive prototype.',
-        why: 'Help build a genuine utility for disabled and neurodiverse students on campus while adding an inclusive design case study to your portfolio.',
-        skills: 'UI/UX Design, Frontend',
-        saved: true,
-        interested: true,
-        started: false
-      },
-      {
-        id: 'campusconnect',
-        title: 'CampusConnect',
-        category: 'Campus Community',
-        stage: 'Idea stage',
-        by: 'Alex Morgan (Year 2, Computer Science)',
-        desc: 'CampusConnect is a student-built concept for bringing campus events, clubs, and student activities into one place. Right now updates are scattered across noticeboards, group chats, and email lists. The goal is a single, searchable feed that helps students find what is happening and get involved.',
-        why: 'Shape a project from the ground up, practise leading a small team, and build a portfolio piece that solves a problem every student recognises.',
-        skills: 'JavaScript, UI/UX',
-        saved: false,
-        interested: false,
-        started: true
-      },
-      {
-        id: 'studyflow',
-        title: 'StudyFlow',
-        category: 'Education',
-        stage: 'In progress',
-        by: 'Daniel Okafor (Year 2, Information Systems)',
-        desc: 'StudyFlow is a simple study-planning tool that helps students organise learning resources and track their academic tasks. The core planner is under way, and the team is now working on reminders, a weekly view, and a clean way to group notes by module.',
-        why: 'Join a project that is already moving, contribute to real features quickly, and gain hands-on experience with a front-end codebase.',
-        skills: 'HTML, CSS, JavaScript',
-        saved: true,
-        interested: false,
-        started: false
-      }
-    ];
+<!-- Project details modal -->
+<div class="overlay" id="overlay" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-title">
+    <button class="modal-close" id="m-close" type="button" aria-label="Close">×</button>
+    <p class="modal-meta" id="m-meta"></p>
+    <h2 id="m-title"></h2>
+    <p class="modal-by">Initiated by <strong id="m-by"></strong></p>
+    <p class="modal-desc" id="m-desc"></p>
+    <h5>Why join this project?</h5><p class="modal-text" id="m-why"></p>
+    <h5>Skills needed</h5><p class="modal-text" id="m-skills"></p>
+    <div class="modal-foot">
+      <button class="btn save-btn" id="m-save" type="button"></button>
+      <button class="interest-btn" id="m-interest" type="button"></button>
+      <span class="own-note" id="m-own" hidden>You started this project.</span>
+    </div>
+  </div>
+</div>
 
-    const listEl = document.getElementById('involve-list');
-    const overlay = document.getElementById('overlay');
-    const el = {
-      meta: document.getElementById('m-meta'),
-      title: document.getElementById('m-title'),
-      by: document.getElementById('m-by'),
-      desc: document.getElementById('m-desc'),
-      why: document.getElementById('m-why'),
-      skills: document.getElementById('m-skills'),
-      save: document.getElementById('m-save'),
-      interest: document.getElementById('m-interest'),
-      own: document.getElementById('m-own'),
-      close: document.getElementById('m-close')
-    };
-    let current = null;
-    let lastFocus = null;
+<script>
+var $ = function (id) { return document.getElementById(id); };
 
-    function statusOf(p) {
-      if (p.started) return 'Started';
-      if (p.interested) return 'Interested';
-      if (p.saved) return 'Saved';
-      return 'Viewed';
-    }
+// ----- Logged-in user (name shown on every page) -----
+var user = null;
+try { user = JSON.parse(localStorage.getItem('pm_currentUser')); } catch (e) {}
+if (!user || !user.name) {
+  location.href = 'login.html';
+  user = { name: 'Guest', email: 'guest' };
+}
+var parts = user.name.trim().split(/\s+/);
+var initials = (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+$('u-avatar').textContent = initials;
+$('u-avatar-big').textContent = initials;
+$('u-name').textContent = parts[0];
+$('u-full').textContent = user.name;
+$('u-role').textContent = user.email;
+$('logout').addEventListener('click', function () {
+  localStorage.removeItem('pm_currentUser');
+  localStorage.removeItem('pm_token');
+  location.href = 'index.html';
+});
 
-    // ----- Project Involvement list -----
-    function renderList() {
-      listEl.innerHTML = '';
-      projects.forEach(function (p) {
-        const item = document.createElement('div');
-        item.className = 'involve-item';
-        item.innerHTML =
-          '<div><h4>' + p.title + '</h4><p>' + p.category + ' · ' + statusOf(p) + '</p></div>' +
-          '<button class="btn" data-id="' + p.id + '">Details</button>';
-        listEl.appendChild(item);
-      });
-    }
+// ----- Editable profile (saved in this browser, per account) -----
+var PKEY = 'pm_profile_' + user.email;
+function loadProfile() {
+  try {
+    var p = JSON.parse(localStorage.getItem(PKEY));
+    if (p) return { bio: p.bio || '', skills: p.skills || [], interests: p.interests || [] };
+  } catch (e) {}
+  return { bio: '', skills: [], interests: [] };
+}
+function saveProfile(p) { try { localStorage.setItem(PKEY, JSON.stringify(p)); } catch (e) {} }
+function splitList(text) {
+  return text.split(',').map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 15);
+}
+function fillTags(box, list, emptyText) {
+  box.textContent = '';
+  if (!list.length) {
+    var note = document.createElement('span');
+    note.className = 'empty-note';
+    note.textContent = emptyText;
+    box.appendChild(note);
+    return;
+  }
+  list.forEach(function (t) {
+    var tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = t;
+    box.appendChild(tag);
+  });
+}
+function paintProfile() {
+  var p = loadProfile();
+  $('u-bio').textContent = p.bio || 'Add a short bio so other students know what you are interested in.';
+  fillTags($('skills-box'), p.skills, 'No skills added yet.');
+  fillTags($('interests-box'), p.interests, 'No interests added yet.');
+}
+var editOverlay = $('edit-overlay');
+function openEdit() {
+  var p = loadProfile();
+  $('e-bio').value = p.bio;
+  $('e-skills').value = p.skills.join(', ');
+  $('e-interests').value = p.interests.join(', ');
+  editOverlay.classList.add('open');
+  editOverlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  $('e-bio').focus();
+}
+function closeEdit() {
+  editOverlay.classList.remove('open');
+  editOverlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  $('edit-btn').focus();
+}
+$('edit-btn').addEventListener('click', openEdit);
+$('e-close').addEventListener('click', closeEdit);
+$('e-cancel').addEventListener('click', closeEdit);
+$('e-save').addEventListener('click', function () {
+  saveProfile({ bio: $('e-bio').value.trim(), skills: splitList($('e-skills').value), interests: splitList($('e-interests').value) });
+  paintProfile();
+  closeEdit();
+});
+editOverlay.addEventListener('click', function (e) { if (e.target === editOverlay) closeEdit(); });
+paintProfile();
 
-    listEl.addEventListener('click', function (e) {
-      const btn = e.target.closest('button[data-id]');
-      if (!btn) return;
-      lastFocus = btn;
-      openModal(btn.dataset.id);
-    });
+// ----- Project involvement (sample data) -----
+var projects = [
+  { id: 'echospace', title: 'EchoSpace', category: 'Accessibility', stage: 'Looking for teammates',
+    by: 'Maya Chen (Year 3, Design & Ergonomics)',
+    desc: 'EchoSpace is designed to make campus navigation transparent and stress-free for all students. It maps physical accessibility routes, quiet sensory study zones, automatic door statuses, and wheelchair-accessible elevator locations in real time. We want to collaborate with student designers and front-end developers to turn preliminary user research into an intuitive prototype.',
+    why: 'Help build a genuine utility for disabled and neurodiverse students on campus while adding an inclusive design case study to your portfolio.',
+    skills: 'UI/UX Design, Frontend', saved: true, interested: true, started: false },
+  { id: 'campusconnect', title: 'CampusConnect', category: 'Campus Community', stage: 'Idea stage',
+    by: user.name + ' (you)',
+    desc: 'CampusConnect is a student-built concept for bringing campus events, clubs, and student activities into one place. Right now updates are scattered across noticeboards, group chats, and email lists. The goal is a single, searchable feed that helps students find what is happening and get involved.',
+    why: 'Shape a project from the ground up, practise leading a small team, and build a portfolio piece that solves a problem every student recognises.',
+    skills: 'JavaScript, UI/UX', saved: false, interested: false, started: true },
+  { id: 'studyflow', title: 'StudyFlow', category: 'Education', stage: 'In progress',
+    by: 'Daniel Okafor (Year 2, Information Systems)',
+    desc: 'StudyFlow is a simple study-planning tool that helps students organise learning resources and track their academic tasks. The core planner is under way, and the team is now working on reminders, a weekly view, and a clean way to group notes by module.',
+    why: 'Join a project that is already moving, contribute to real features quickly, and gain hands-on experience with a front-end codebase.',
+    skills: 'HTML, CSS, JavaScript', saved: true, interested: false, started: false }
+];
 
-    // ----- Modal -----
-    function renderModalButtons() {
-      el.save.textContent = current.saved ? 'Saved' : 'Save';
-      el.save.setAttribute('aria-pressed', current.saved);
+var listEl = $('involve-list');
+var overlay = $('overlay');
+var current = null, lastFocus = null;
 
-      el.interest.hidden = current.started;
-      el.own.hidden = !current.started;
-      el.interest.classList.toggle('on', current.interested);
-      el.interest.textContent = current.interested ? '✓ Interest Expressed' : "I'm interested";
-      el.interest.setAttribute('aria-pressed', current.interested);
-    }
-
-    function openModal(id) {
-      current = projects.find(function (p) { return p.id === id; });
-      el.meta.textContent = current.category + ' · ' + current.stage;
-      el.title.textContent = current.title;
-      el.by.textContent = current.by;
-      el.desc.textContent = current.desc;
-      el.why.textContent = current.why;
-      el.skills.textContent = current.skills;
-      renderModalButtons();
-      overlay.classList.add('open');
-      overlay.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('modal-open');
-      el.close.focus();
-    }
-
-    function closeModal() {
-      overlay.classList.remove('open');
-      overlay.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('modal-open');
-      if (lastFocus) lastFocus.focus();
-    }
-
-    el.save.addEventListener('click', function () {
-      current.saved = !current.saved;
-      renderModalButtons();
-      renderList();
-    });
-
-    el.interest.addEventListener('click', function () {
-      current.interested = !current.interested;
-      renderModalButtons();
-      renderList();
-    });
-
-    el.close.addEventListener('click', closeModal);
-    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
-    });
-
-    renderList();
-  </script>
+function statusOf(p) {
+  if (p.started) return 'Started';
+  if (p.interested) return 'Interested';
+  if (p.saved) return 'Saved';
+  return 'Viewed';
+}
+function renderList() {
+  listEl.innerHTML = '';
+  projects.forEach(function (p) {
+    var item = document.createElement('div');
+    item.className = 'involve-item';
+    item.innerHTML = '<div><h4>' + p.title + '</h4><p>' + p.category + ' · ' + statusOf(p) + '</p></div><button class="btn" data-id="' + p.id + '">Details</button>';
+    listEl.appendChild(item);
+  });
+}
+listEl.addEventListener('click', function (e) {
+  var btn = e.target.closest('button[data-id]');
+  if (!btn) return;
+  lastFocus = btn;
+  openModal(btn.dataset.id);
+});
+function renderModalButtons() {
+  $('m-save').textContent = current.saved ? 'Saved' : 'Save';
+  $('m-save').setAttribute('aria-pressed', current.saved);
+  $('m-interest').hidden = current.started;
+  $('m-own').hidden = !current.started;
+  $('m-interest').classList.toggle('on', current.interested);
+  $('m-interest').textContent = current.interested ? '✓ Interest Expressed' : "I'm interested";
+  $('m-interest').setAttribute('aria-pressed', current.interested);
+}
+function openModal(id) {
+  current = projects.find(function (p) { return p.id === id; });
+  $('m-meta').textContent = current.category + ' · ' + current.stage;
+  $('m-title').textContent = current.title;
+  $('m-by').textContent = current.by;
+  $('m-desc').textContent = current.desc;
+  $('m-why').textContent = current.why;
+  $('m-skills').textContent = current.skills;
+  renderModalButtons();
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  $('m-close').focus();
+}
+function closeModal() {
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  if (lastFocus) lastFocus.focus();
+}
+$('m-save').addEventListener('click', function () { current.saved = !current.saved; renderModalButtons(); renderList(); });
+$('m-interest').addEventListener('click', function () { current.interested = !current.interested; renderModalButtons(); renderList(); });
+$('m-close').addEventListener('click', closeModal);
+overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  if (editOverlay.classList.contains('open')) closeEdit();
+  else if (overlay.classList.contains('open')) closeModal();
+});
+renderList();
+</script>
 </body>
 </html>
