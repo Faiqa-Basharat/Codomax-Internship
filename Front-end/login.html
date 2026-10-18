@@ -141,51 +141,65 @@
   </main>
 
   <script>
-    var form = document.getElementById('login-form');
+    var API = 'http://localhost:5000/api';
+var form = document.getElementById('login-form');
 
-    function setError(id, message) {
-      var input = document.getElementById(id);
-      document.getElementById(id + '-error').textContent = message;
-      input.setAttribute('aria-invalid', message ? 'true' : 'false');
+function setError(id, message) {
+  var input = document.getElementById(id);
+  document.getElementById(id + '-error').textContent = message;
+  input.setAttribute('aria-invalid', message ? 'true' : 'false');
+}
+
+['email', 'password'].forEach(function (id) {
+  document.getElementById(id).addEventListener('input', function () {
+    setError(id, '');
+    document.getElementById('form-error').textContent = '';
+  });
+});
+
+form.addEventListener('submit', async function (e) {
+  e.preventDefault();
+  var email = form.email.value.trim().toLowerCase();
+  var password = form.password.value;
+  var formError = document.getElementById('form-error');
+  formError.textContent = '';
+
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setError('email', emailOk ? '' : 'Please enter a valid email address.');
+  setError('password', password ? '' : 'Please enter your password.');
+  if (!emailOk || !password) {
+    var firstBad = form.querySelector('[aria-invalid="true"]');
+    if (firstBad) firstBad.focus();
+    return;
+  }
+
+  var btn = form.querySelector('.submit');
+  btn.disabled = true;
+  btn.textContent = 'Logging in...';
+
+  try {
+    var res = await fetch(API + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: password })
+    });
+    var data = await res.json();
+
+    if (!res.ok) {
+      formError.textContent = data.message || 'Login failed.';
+      return;
     }
 
-    function getUsers() {
-      try { return JSON.parse(localStorage.getItem('pm_users')) || []; }
-      catch (e) { return []; }
-    }
-
-    ['email', 'password'].forEach(function (id) {
-      document.getElementById(id).addEventListener('input', function () {
-        setError(id, '');
-        document.getElementById('form-error').textContent = '';
-      });
-    });
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var email = form.email.value.trim().toLowerCase();
-      var password = form.password.value;
-      var formError = document.getElementById('form-error');
-      formError.textContent = '';
-
-      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      setError('email', emailOk ? '' : 'Please enter a valid email address.');
-      setError('password', password ? '' : 'Please enter your password.');
-      if (!emailOk || !password) {
-        var firstBad = form.querySelector('[aria-invalid="true"]');
-        if (firstBad) firstBad.focus();
-        return;
-      }
-
-      var user = getUsers().find(function (u) { return u.email === email && u.password === password; });
-      if (!user) {
-        formError.textContent = 'Email or password is incorrect. If you are new here, register first.';
-        return;
-      }
-
-      localStorage.setItem('pm_currentUser', JSON.stringify({ name: user.name, email: user.email }));
-      window.location.href = 'index.html';
-    });
+    localStorage.setItem('pm_token', data.token);
+    localStorage.setItem('pm_currentUser', JSON.stringify(data.user));
+    window.location.href = 'index.html';
+  } catch (err) {
+    formError.textContent = 'Cannot reach the server. Is it running?';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Log In';
+  }
+});
   </script>
 </body>
 </html>

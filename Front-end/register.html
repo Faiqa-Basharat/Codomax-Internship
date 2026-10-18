@@ -143,6 +143,7 @@
         <p class="error" id="confirm-error" role="alert"></p>
       </div>
 
+      <p class="error" id="form-error" role="alert" style="margin:0 0 12px"></p>
       <button type="submit" class="submit">Register Now</button>
     </form>
 
@@ -150,74 +151,85 @@
   </main>
 
   <script>
-    var form = document.getElementById('signup-form');
-    var fields = ['name', 'email', 'password', 'confirm'];
+   var API = 'http://localhost:5000/api';
+var form = document.getElementById('signup-form');
+var fields = ['name', 'email', 'password', 'confirm'];
 
-    function setError(id, message) {
-      var input = document.getElementById(id);
-      document.getElementById(id + '-error').textContent = message;
-      input.setAttribute('aria-invalid', message ? 'true' : 'false');
-    }
+function setError(id, message) {
+  var input = document.getElementById(id);
+  document.getElementById(id + '-error').textContent = message;
+  input.setAttribute('aria-invalid', message ? 'true' : 'false');
+}
 
-    function getUsers() {
-      try { return JSON.parse(localStorage.getItem('pm_users')) || []; }
-      catch (e) { return []; }
-    }
+function validate() {
+  var name = form.name.value.trim();
+  var email = form.email.value.trim().toLowerCase();
+  var password = form.password.value;
+  var confirm = form.confirm.value;
+  var ok = true;
 
-    function validate() {
-      var name = form.name.value.trim();
-      var email = form.email.value.trim().toLowerCase();
-      var password = form.password.value;
-      var confirm = form.confirm.value;
-      var ok = true;
+  setError('name', name.length < 2 ? 'Please enter your full name.' : '');
+  if (name.length < 2) ok = false;
 
-      setError('name', name.length < 2 ? 'Please enter your full name.' : '');
-      if (name.length < 2) ok = false;
+  var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  setError('email', emailOk ? '' : 'Please enter a valid email address.');
+  if (!emailOk) ok = false;
 
-      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      var taken = getUsers().some(function (u) { return u.email === email; });
-      var emailMsg = !emailOk ? 'Please enter a valid email address.'
-                   : taken ? 'An account with this email already exists. Try logging in.' : '';
-      setError('email', emailMsg);
-      if (emailMsg) ok = false;
+  setError('password', password.length < 6 ? 'Password must be at least 6 characters.' : '');
+  if (password.length < 6) ok = false;
 
-      setError('password', password.length < 6 ? 'Password must be at least 6 characters.' : '');
-      if (password.length < 6) ok = false;
+  var confirmMsg = !confirm ? 'Please re-enter your password.'
+                 : confirm !== password ? 'Passwords do not match.' : '';
+  setError('confirm', confirmMsg);
+  if (confirmMsg) ok = false;
 
-      var confirmMsg = !confirm ? 'Please re-enter your password.'
-                     : confirm !== password ? 'Passwords do not match.' : '';
-      setError('confirm', confirmMsg);
-      if (confirmMsg) ok = false;
+  return ok;
+}
 
-      return ok;
-    }
+fields.forEach(function (id) {
+  document.getElementById(id).addEventListener('input', function () { setError(id, ''); });
+});
 
-    // clear an error as soon as the person starts fixing it
-    fields.forEach(function (id) {
-      document.getElementById(id).addEventListener('input', function () { setError(id, ''); });
-    });
+form.addEventListener('submit', async function (e) {
+  e.preventDefault();
+  if (!validate()) {
+    var firstBad = form.querySelector('[aria-invalid="true"]');
+    if (firstBad) firstBad.focus();
+    return;
+  }
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      if (!validate()) {
-        var firstBad = form.querySelector('[aria-invalid="true"]');
-        if (firstBad) firstBad.focus();
-        return;
-      }
+  var btn = form.querySelector('.submit');
+  btn.disabled = true;
+  btn.textContent = 'Creating account...';
 
-      var user = {
+  try {
+    var res = await fetch(API + '/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         name: form.name.value.trim().replace(/\s+/g, ' '),
         email: form.email.value.trim().toLowerCase(),
-        password: form.password.value   // demo only: a real site must never store passwords in the browser
-      };
-
-      var users = getUsers();
-      users.push(user);
-      localStorage.setItem('pm_users', JSON.stringify(users));
-      localStorage.setItem('pm_currentUser', JSON.stringify({ name: user.name, email: user.email }));
-
-      window.location.href = 'index.html';
+        password: form.password.value
+      })
     });
+    var data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409) setError('email', data.message);
+      else setError('confirm', data.message || 'Something went wrong.');
+      return;
+    }
+
+    localStorage.setItem('pm_token', data.token);
+    localStorage.setItem('pm_currentUser', JSON.stringify(data.user));
+    window.location.href = 'index.html';
+  } catch (err) {
+    setError('confirm', 'Cannot reach the server. Is it running?');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Register Now';
+  }
+});
   </script>
 </body>
 </html>
