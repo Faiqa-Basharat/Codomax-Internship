@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProjectMatch - Write a Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<div id="site-nav"></div>
+<main class="wrap">
+  <h1>Write a blog</h1>
+  <p class="sub">Share an idea, a lesson, or a project update.</p>
+  <form id="f" novalidate>
+    <div class="field"><label for="title">Title</label><input id="title" maxlength="120" placeholder="Give your blog a title"></div>
+    <div class="field"><label for="content">Content</label><textarea id="content" placeholder="Write your blog here..."></textarea></div>
+    <p class="err" id="err" role="alert"></p>
+    <button class="btn" id="go" type="submit">Publish</button>
+  </form>
+</main>
+<script src="blog-common.js"></script>
+<script>
+renderNav('write.html');
+var token = localStorage.getItem('pm_token');
+if (!token) location.href = 'login.html';
+
+document.getElementById('f').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  var title = document.getElementById('title').value.trim();
+  var content = document.getElementById('content').value.trim();
+  var err = document.getElementById('err'), btn = document.getElementById('go');
+  err.textContent = '';
+  if (!title || !content) { err.textContent = 'Please add a title and some content.'; return; }
+
+  btn.disabled = true; btn.textContent = 'Publishing...';
+  try {
+    var res = await fetch(API + '/blogs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ title: title, content: content })
+    });
+    var data = await res.json();
+    if (res.status === 401) {
+      localStorage.removeItem('pm_token');
+      err.textContent = 'Your session expired. Please log in again.';
+      return;
+    }
+    if (!res.ok) { err.textContent = data.message || 'Something went wrong.'; return; }
+    location.href = 'blog.html?id=' + encodeURIComponent(data._id);
+  } catch (x) {
+    err.textContent = 'Cannot reach the server. Is it running?';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Publish';
+  }
+});
+</script>
+</body>
+</html>
