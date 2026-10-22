@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProjectMatch - Blogs</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="blog.css">
+</head>
+<body>
+<div id="site-nav"></div>
+<main class="wrap">
+  <h1>Blogs</h1>
+  <p class="sub">Read what students are writing.</p>
+  <p style="margin-bottom:24px"><a class="btn" href="write.html">Write a blog</a></p>
+  <div id="list"><p class="msg">Loading blogs...</p></div>
+</main>
+<script src="blog-common.js"></script>
+<script>
+renderNav('blogs.html');
+var list = document.getElementById('list');
+
+fetch(API + '/blogs')
+  .then(function (r) { if (!r.ok) throw new Error('bad response'); return r.json(); })
+  .then(function (blogs) {
+    list.textContent = '';
+    if (!blogs.length) {
+      list.innerHTML = '<p class="msg">No blogs yet. Be the first to write one.</p>';
+      return;
+    }
+    blogs.forEach(function (b) {
+      var card = document.createElement('a');
+      card.className = 'card';
+      card.href = 'blog.html?id=' + encodeURIComponent(b._id);
+      var h = document.createElement('h2');
+      h.textContent = b.title;
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = 'By ' + (b.author && b.author.name ? b.author.name : 'Unknown') + ' · ' + fmtDate(b.createdAt);
+      var p = document.createElement('p');
+      p.textContent = b.content.length > 160 ? b.content.slice(0, 160) + '…' : b.content;
+      card.appendChild(h); card.appendChild(meta); card.appendChild(p);
+      list.appendChild(card);
+    });
+  })
+  .catch(function () {
+    list.innerHTML = '<p class="msg">Cannot load blogs. Is the server running?</p>';
+  });
+</script>
+</body>
+</html>
